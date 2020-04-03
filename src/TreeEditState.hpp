@@ -41,6 +41,20 @@ Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
 }
 
 
+struct TreeStats {
+    size_t vertices{};
+    size_t triangles{};
+};
+
+TreeStats getStatsFromModel (Urho3D::Model* pModel) {
+    TreeStats ret;
+
+    ret.vertices = pModel->GetVertexBuffers()[0]->GetVertexCount();
+    ret.triangles = pModel->GetIndexBuffers()[0]->GetIndexCount() / 3;
+
+    return ret;
+}
+
 class TreeEditState final : public UrhoBits::IUpdatedState,
                             public Urho3D::Object {
     URHO3D_OBJECT(TreeEditState, Object);
@@ -107,6 +121,8 @@ public:
             _tree.settingUpdated();
         }
         _statsMsecs = tm.GetMSec(false);
+
+        updateModelStats();
     }
 
     std::string getNextFreePresetName () {
@@ -171,6 +187,13 @@ public:
     }
 
 private:
+    void updateModelStats () {
+        _statsTree = getStatsFromModel(_tree.getModels().first.Get());
+        _statsLeaves = getStatsFromModel(_tree.getModels().second.Get());
+        _statsSum = { _statsTree.vertices + _statsLeaves.vertices,
+                      _statsTree.triangles + _statsLeaves.triangles };
+    }
+
     void exportModel () {
         /*
         aiScene* scn = new aiScene();
@@ -469,6 +492,8 @@ private:
             pSetting.setInt(pSetting.getInt());
         }
         _statsMsecs = tm.GetMSec(false);
+
+        updateModelStats();
     }
 
     void renderTreeSettingsUi () {
@@ -496,6 +521,16 @@ private:
             ImGui::Text("Generated in (msecs):");
             ImGui::SameLine();
             ImGui::Text("%d", _statsMsecs);
+
+            ImGui::Text("  Tree | Triangles: %d Vertices: %d",
+                        _statsTree.triangles,
+                        _statsTree.vertices);
+            ImGui::Text("Leaves | Triangles: %d Vertices: %d",
+                        _statsLeaves.triangles,
+                        _statsLeaves.vertices);
+            ImGui::Text(" Total | Triangles: %d Vertices: %d",
+                        _statsSum.triangles,
+                        _statsSum.vertices);
         }
         ui::End();
     }
@@ -518,6 +553,9 @@ private:
     ea::vector<ea::string> _presets;
 
     unsigned _statsMsecs = 0;
+    TreeStats _statsTree;
+    TreeStats _statsLeaves;
+    TreeStats _statsSum;
     size_t _longestSettingLength = 5;
 
     bool _isForking = false;
