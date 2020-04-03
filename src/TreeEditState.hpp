@@ -195,35 +195,6 @@ private:
     }
 
     void exportModel () {
-        /*
-        aiScene* scn = new aiScene();
-        scn->mRootNode = new aiNode();
-        auto mesh = new aiMesh[1];
-        scn->mMeshes =  &mesh;
-        unsigned indices_[] = { 0, 1, 2 };
-        scn->mNumMeshes = 1;
-        {
-            scn->mMeshes[0]->mNumVertices = 3;
-            scn->mMeshes[0]->mNumFaces = 1;
-            scn->mMeshes[0]->mVertices = new aiVector3D[3];
-            scn->mMeshes[0]->mNormals = new aiVector3D[3];
-            scn->mMeshes[0]->mFaces = new aiFace[1];
-            scn->mMeshes[0]->mVertices[0] = aiVector3D(0, 0, 0);
-            scn->mMeshes[0]->mVertices[1] = aiVector3D(1, 0, 0);
-            scn->mMeshes[0]->mVertices[2] = aiVector3D(1, 1, 0);
-
-            scn->mMeshes[0]->mNormals[0] =  aiVector3D(0, 0, 1);
-            scn->mMeshes[0]->mNormals[1] =  aiVector3D(0, 0, 1);
-            scn->mMeshes[0]->mNormals[2] =  aiVector3D(0, 0, 1);
-
-            scn->mMeshes[0]->mFaces[0].mNumIndices = 3;
-            scn->mMeshes[0]->mFaces[0].mIndices = indices_;
-
-        }
-        Assimp::Exporter exp;
-        exp.Export(scn, "obj", "file.obj");
-        URHO3D_LOGINFO(exp.GetErrorString());
-        */
         fx::gltf::Document helmet = fx::gltf::LoadFromBinary("box-gltf.glb");
 
         auto models = _tree.getModels();
