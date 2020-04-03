@@ -8,8 +8,8 @@
 //                      Urho3D::VertexBuffer& pVertexBuffer) {
 //}
 
-fx::gltf::Document fromUrho (Urho3D::SharedPtr<Urho3D::Model> &pModel) {
-        fx::gltf::Document exp;
+void appendModelToGltfDocument (fx::gltf::Document &pDocument,
+                                Urho3D::SharedPtr<Urho3D::Model> &pModel) {
         auto vertex_buffers = pModel->GetVertexBuffers();
         auto index_buffers = pModel->GetIndexBuffers();
 
@@ -21,71 +21,67 @@ fx::gltf::Document fromUrho (Urho3D::SharedPtr<Urho3D::Model> &pModel) {
         const uint32_t index_data_size =
             index_count * index_buffers[0]->GetIndexSize();
 
-        exp.buffers.push_back(fx::gltf::Buffer{});
+        pDocument.buffers.push_back(fx::gltf::Buffer{});
         // TODO: only 1 buffer
-        exp.buffers[0].data.resize(vertex_data_size + index_data_size); 
-        exp.buffers[0].byteLength = exp.buffers[0].data.size();
-        std::memcpy(exp.buffers[0].data.data(),
+        pDocument.buffers[0].data.resize(vertex_data_size + index_data_size); 
+        pDocument.buffers[0].byteLength = pDocument.buffers[0].data.size();
+        std::memcpy(pDocument.buffers[0].data.data(),
                     vertex_buffers[0]->GetShadowData(),
                     vertex_data_size);
 
-        exp.bufferViews.push_back(
-            // name, buffer, offset, length, stride, target-type
-            fx::gltf::BufferView{ "noname",
-                                  0,
-                                  0,
-                                  vertex_data_size,
-                                  vertex_size,
-                                  fx::gltf::BufferView::TargetType::ArrayBuffer,
-                                  {} });
+        fx::gltf::BufferView view0;
+        view0.name = "nonameview0";
+        view0.buffer = 0;
+        view0.byteOffset = 0;
+        view0.byteLength = vertex_data_size;
+        view0.byteStride = vertex_size;
+        view0.target = fx::gltf::BufferView::TargetType::ArrayBuffer;
 
-        std::memcpy(exp.buffers[0].data.data() + vertex_data_size,
+        std::memcpy(pDocument.buffers[0].data.data() + vertex_data_size,
                     index_buffers[0]->GetShadowData(),
                     index_data_size);
 
-        exp.bufferViews.push_back(
-            // name, buffer, offset, length, stride, target-type
-            fx::gltf::BufferView{ "noname",
-                                   0,
-                                   vertex_data_size,
-                                   index_data_size,
-                                   0,
-                                   fx::gltf::BufferView::TargetType::ElementArrayBuffer,
-                                   {} });
+        pDocument.bufferViews.push_back(view0);
+
+        fx::gltf::BufferView view1;
+        view1.name = "nonameview1";
+        view1.buffer = 0;
+        view1.byteOffset = vertex_data_size;
+        view1.byteLength = index_data_size;
+        view1.byteStride = 0;
+        view1.target = fx::gltf::BufferView::TargetType::ElementArrayBuffer;
+
+        pDocument.bufferViews.push_back(view1);
+
         auto bb = pModel->GetBoundingBox();
-        exp.accessors.push_back(fx::gltf::Accessor{
-                0, // bufferView
-                    0, // byteOffset
-                    vertex_count, // count
-                    false, // normalized
-                    fx::gltf::Accessor::ComponentType::Float,
-                    fx::gltf::Accessor::Type::Vec3,
-                    {}, // sparse
-                    "noname",
-                    {
-                        bb.max_.x_, bb.max_.y_, bb.max_.z_
-                    }, // max  TODO hardcode
-                    {
-                        bb.min_.x_, bb.min_.y_, bb.min_.z_
-                    }, // min TODO hardcode
-                    {} //extra json stuff
-            });
+
+        fx::gltf::Accessor accessor0;
+        accessor0.bufferView = 0;
+        accessor0.byteOffset = 0;
+        accessor0.count = vertex_count;
+        accessor0.normalized = false;
+        accessor0.componentType = fx::gltf::Accessor::ComponentType::Float;
+        accessor0.type = fx::gltf::Accessor::Type::Vec3;
+        accessor0.name = "nonameaccessor0_vertex_positions";
+        accessor0.max = { bb.max_.x_, bb.max_.y_, bb.max_.z_ };
+        accessor0.min = { bb.min_.x_, bb.min_.y_, bb.min_.z_ };
+
+        pDocument.accessors.push_back(accessor0);
+
+        fx::gltf::Accessor accessor1;
+        accessor1.bufferView = 1;
+        accessor1.byteOffset = 0;
+        accessor1.count = index_count;
+        accessor1.normalized = false;
+        accessor1.componentType = fx::gltf::Accessor::ComponentType::UnsignedShort;
+        accessor1.type = fx::gltf::Accessor::Type::Scalar;
+        accessor1.name = "nonameaccessor1_indices";
+        accessor1.max = { bb.max_.x_, bb.max_.y_, bb.max_.z_ };
+        accessor1.min = { bb.min_.x_, bb.min_.y_, bb.min_.z_ };
+
+        pDocument.accessors.push_back(accessor1);
 
         // TODO other vertex attributes
-
-        exp.accessors.push_back(fx::gltf::Accessor{
-            1, // bufferView
-            0, // byteOffset
-            index_count, // count
-            false, // normalized
-            fx::gltf::Accessor::ComponentType::UnsignedShort,
-            fx::gltf::Accessor::Type::Scalar,
-            {}, // sparse
-            "indices0", // TODO hardcode name
-            {float(vertex_count - 1)}, // max
-            {0.f}, // min
-            {} //extra json stuff
-        });
 
         fx::gltf::Primitive primitive;
         primitive.indices = 1;
@@ -96,10 +92,9 @@ fx::gltf::Document fromUrho (Urho3D::SharedPtr<Urho3D::Model> &pModel) {
         fx::gltf::Mesh mesh;
         mesh.name = "meshname";
         mesh.primitives = { primitive };
-        exp.meshes.push_back(mesh);
+        pDocument.meshes.push_back(mesh);
 
         fx::gltf::Node node;
         node.mesh = 0;
-        exp.nodes.push_back(node);
-        return exp;
+        pDocument.nodes.push_back(node);
 }

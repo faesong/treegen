@@ -206,7 +206,8 @@ private:
         auto models = _tree.getModels();
         auto trunk = models.first;
 
-        fx::gltf::Document exp = fromUrho(trunk);
+        fx::gltf::Document exp;
+        appendModelToGltfDocument(exp, trunk);
 
         fx::gltf::Save(exp, "export.glb", true);
     }
