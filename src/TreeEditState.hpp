@@ -204,10 +204,10 @@ private:
         fx::gltf::Document helmet = fx::gltf::LoadFromBinary("box-gltf.glb");
 
         auto models = _tree.getModels();
-        auto trunk = models.first;
 
         fx::gltf::Document exp;
-        appendModelToGltfDocument(exp, trunk);
+        appendModelToGltfDocument(exp, models.first);
+        appendModelToGltfDocument(exp, models.second);
 
         fx::gltf::Save(exp, "export.glb", true);
     }
