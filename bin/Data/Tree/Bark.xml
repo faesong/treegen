@@ -1,0 +1,12 @@
+<material>
+
+  <technique name="Techniques/Diff.xml">
+
+  </technique>
+  <texture unit="diffuse" name="Tree/bark.png" />
+  <texture unit="specular" name="Tree/bark.png" />
+  <parameter name="MatSpecColor" value="0.1 0.1 0.1 200"/>
+  <parameter name="MatDiffColor" value="0.3 0.23 0 1" />
+  <parameter name="MatEmissiveColor" value="0.0 0.0 0.0" />
+  <parameter name="AmbientColor" value="0.3 0.23 0.0 1" />
+</material>
