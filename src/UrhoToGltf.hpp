@@ -19,6 +19,10 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     const uint32_t index_data_size =
         index_count * index_buffers[0]->GetIndexSize();
 
+    if (vertex_count == 0) {
+        return;
+    }
+
     // TODO3: only 1 buffer supported for now
     if (pDocument.buffers.size() == 0) {
         pDocument.buffers.push_back(fx::gltf::Buffer{});
@@ -31,7 +35,6 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
         throw std::runtime_error(
             "fx::gltf::Document::buffer[0] got too big, sorry");
     }
-
 
 
     const uint32_t buffer0_prev_size = pDocument.buffers[0].byteLength;
@@ -72,50 +75,62 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     const uint32_t view1_pos = pDocument.bufferViews.size();
     pDocument.bufferViews.push_back(view1);
 
+
     auto bb = pModel->GetBoundingBox();
 
-    fx::gltf::Accessor accessor_positions;
-    accessor_positions.bufferView = view0_pos;
-    accessor_positions.byteOffset = 0;
-    accessor_positions.count = vertex_count;
-    accessor_positions.normalized = false;
-    accessor_positions.componentType = fx::gltf::Accessor::ComponentType::Float;
-    accessor_positions.type = fx::gltf::Accessor::Type::Vec3;
-    accessor_positions.name = "accessor_vertex_positions";
-    accessor_positions.max = { bb.max_.x_, bb.max_.y_, bb.max_.z_ };
-    accessor_positions.min = { bb.min_.x_, bb.min_.y_, bb.min_.z_ };
+    fx::gltf::Primitive primitive;
 
-    const uint32_t accessor_positions_pos = pDocument.accessors.size();
-    pDocument.accessors.push_back(accessor_positions);
+    auto vert_elements = vertex_buffers[0]->GetElements();
+    for (size_t el_i = 0; el_i < vert_elements.size(); ++el_i) {
+        const auto &el = vert_elements[el_i];
 
-    fx::gltf::Accessor accessor_normals;
-    accessor_normals.bufferView = view0_pos;
-    accessor_normals.byteOffset = 3*4;
-    accessor_normals.count = vertex_count;
-    accessor_normals.normalized = false;
-    accessor_normals.componentType = fx::gltf::Accessor::ComponentType::Float;
-    accessor_normals.type = fx::gltf::Accessor::Type::Vec3;
-    accessor_normals.name = "nonameaccessor_vertex_normals";
-    accessor_normals.max = { 1, 1, 1 };
-    accessor_normals.min = { -1, -1, -1 };
+        fx::gltf::Accessor accessor;
+        accessor.bufferView = view0_pos;
+        accessor.count = vertex_count;
+        accessor.normalized = false;
 
-    const uint32_t accessor_normals_pos = pDocument.accessors.size();
-    pDocument.accessors.push_back(accessor_normals);
-
-    fx::gltf::Accessor accessor_texcoords;
-    accessor_texcoords.bufferView = view0_pos;
-    accessor_texcoords.byteOffset = 24;
-    accessor_texcoords.count = vertex_count;
-    accessor_texcoords.normalized = false;
-    accessor_texcoords.componentType = fx::gltf::Accessor::ComponentType::Float;
-    accessor_texcoords.type = fx::gltf::Accessor::Type::Vec2;
-    accessor_texcoords.name = "nonameaccessor_texcoords";
-    accessor_texcoords.max = { 1, 1 };
-    accessor_texcoords.min = { 0, 0 };
-
-    const uint32_t accessor_texcoords_pos = pDocument.accessors.size();
-    pDocument.accessors.push_back(accessor_texcoords);
-
+        switch (el.semantic_) {
+        case Urho3D::SEM_POSITION:
+            accessor.byteOffset = el.offset_;
+            accessor.componentType = fx::gltf::Accessor::ComponentType::Float;
+            accessor.type = fx::gltf::Accessor::Type::Vec3;
+            accessor.name = "accessor_vertex_positions";
+            accessor.max = { bb.max_.x_, bb.max_.y_, bb.max_.z_ };
+            accessor.min = { bb.min_.x_, bb.min_.y_, bb.min_.z_ };
+            primitive.attributes["POSITION"] = pDocument.accessors.size();
+            break;
+        case Urho3D::SEM_NORMAL:
+            accessor.byteOffset = el.offset_;
+            accessor.normalized = false;
+            accessor.componentType = fx::gltf::Accessor::ComponentType::Float;
+            accessor.type = fx::gltf::Accessor::Type::Vec3;
+            accessor.name = "accessor_vertex_normals";
+            accessor.max = { 1, 1, 1 };
+            accessor.min = { -1, -1, -1 };
+            primitive.attributes["NORMAL"] = pDocument.accessors.size();
+            break;
+        case Urho3D::SEM_TEXCOORD:
+            accessor.byteOffset = el.offset_;
+            accessor.componentType = fx::gltf::Accessor::ComponentType::Float;
+            accessor.type = fx::gltf::Accessor::Type::Vec2;
+            accessor.name = "accessor_texcoords";
+            accessor.max = { 1, 1 };
+            accessor.min = { 0, 0 };
+            // TODO: more than 1 texcoord
+            primitive.attributes["TEXCOORD_0"] = pDocument.accessors.size();
+            break;
+        //TODO7: other vertex attributes
+        case Urho3D::SEM_BINORMAL:
+        case Urho3D::SEM_TANGENT:
+        case Urho3D::SEM_COLOR:
+        case Urho3D::SEM_BLENDWEIGHTS:
+        case Urho3D::SEM_BLENDINDICES:
+        case Urho3D::SEM_OBJECTINDEX:
+        default:
+            continue; // important to skip adding invalid accessor
+        }
+        pDocument.accessors.push_back(accessor);
+    }
 
     fx::gltf::Accessor accessor_indices;
     accessor_indices.bufferView = view1_pos;
@@ -125,21 +140,12 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     accessor_indices.componentType = fx::gltf::Accessor::ComponentType::UnsignedShort;
     accessor_indices.type = fx::gltf::Accessor::Type::Scalar;
     accessor_indices.name = "nonameaccessor_indices_indices";
-    accessor_indices.max = { bb.max_.x_, bb.max_.y_, bb.max_.z_ };
-    accessor_indices.min = { bb.min_.x_, bb.min_.y_, bb.min_.z_ };
+    accessor_indices.max = { float(vertex_count - 1) };
+    accessor_indices.min = { 0 };
 
-    const uint32_t accessor_indices_pos = pDocument.accessors.size();
+    primitive.indices = pDocument.accessors.size();
     pDocument.accessors.push_back(accessor_indices);
 
-    // TODO fixed vertex attributes
-
-    fx::gltf::Primitive primitive;
-    primitive.indices = accessor_indices_pos;
-    primitive.attributes = {
-                            { "POSITION", accessor_positions_pos }, // # of Accessor
-                            { "NORMAL", accessor_normals_pos },
-                            { "TEXCOORD_0", accessor_texcoords_pos },
-    };
 
     fx::gltf::Mesh mesh;
     mesh.name = "meshname";

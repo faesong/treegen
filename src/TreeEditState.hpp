@@ -40,6 +40,24 @@ Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
 }
 
 
+
+#include <chrono>  // chrono::system_clock
+#include <ctime>   // localtime
+#include <sstream> // stringstream
+#include <iomanip> // put_time
+#include <string>  // string
+
+std::string getTimestamp()
+{
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y.%m.%d_%H-%M-%S");
+    return ss.str();
+}
+
+
 struct TreeStats {
     size_t vertices{};
     size_t triangles{};
@@ -202,7 +220,8 @@ private:
         appendModelToGltfDocument(exp, models.first);
         appendModelToGltfDocument(exp, models.second);
 
-        fx::gltf::Save(exp, "export.glb", true);
+
+        fx::gltf::Save(exp, "export" + getTimestamp() + ".glb", true);
     }
 
     void renderUi () {
