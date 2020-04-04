@@ -1896,7 +1896,7 @@ namespace gltf
 
             detail::Save(document, output, documentRootPath, useBinaryFormat);
         }
-        catch (invalid_gltf_document & d)
+        catch (invalid_gltf_document &)
         {
             throw;
         }
