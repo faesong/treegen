@@ -209,6 +209,7 @@ private:
         _statsLeaves = getStatsFromModel(_tree.getModels().second.Get());
         _statsSum = { _statsTree.vertices + _statsLeaves.vertices,
                       _statsTree.triangles + _statsLeaves.triangles };
+        _statsNumLeaves = _tree.getNumLeaves();
     }
 
     void exportModel () {
@@ -520,6 +521,8 @@ private:
             ImGui::Text(" Total | Triangles: %d Vertices: %d",
                         _statsSum.triangles,
                         _statsSum.vertices);
+            ImGui::Text("Leaves: %d", _statsNumLeaves);
+
         }
         ui::End();
     }
@@ -545,6 +548,7 @@ private:
     TreeStats _statsTree;
     TreeStats _statsLeaves;
     TreeStats _statsSum;
+    size_t _statsNumLeaves = 0;
     size_t _longestSettingLength = 5;
 
     bool _isForking = false;
