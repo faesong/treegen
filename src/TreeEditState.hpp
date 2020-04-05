@@ -137,9 +137,9 @@ public:
         } else {
             _tree.settingUpdated();
         }
-        _statsMsecs = tm.GetMSec(false);
 
-        updateModelStats();
+        _statsMsecs = tm.GetMSec(false);
+        onModelUpdated();
     }
 
     std::string getNextFreePresetName () {
@@ -196,8 +196,9 @@ public:
                 _camCtl.update(pTimeStep,
                                input->GetMouseMove());
             }
-            if(input->GetMouseButtonPress(Urho3D::MOUSEB_X1)) {
-                //_camCtl.zoomUp(0.1);
+            auto wheelmove = input->GetMouseMoveWheel();
+            if (wheelmove) {
+                _camCtl.zoom(1.f - VcppBits::MathUtils::sign(wheelmove) * 0.1f);
             }
         }
         renderUi();
@@ -483,8 +484,12 @@ private:
             pSetting.setInt(pSetting.getInt());
         }
         _statsMsecs = tm.GetMSec(false);
+        onModelUpdated();
+    }
 
+    void onModelUpdated () {
         updateModelStats();
+        _camCtl.setPointOfInterest(_tree.getTruncBoundingBox().Center());
     }
 
     void renderTreeSettingsUi () {
