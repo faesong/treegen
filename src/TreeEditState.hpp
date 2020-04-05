@@ -147,7 +147,7 @@ public:
 
         for (size_t i = 0;; ++i) {
             if (i < 1000) {
-                snprintf (ret + 7, 4, "%03ld", i);
+                snprintf (ret + 7, 4, "%03zu", i);
             } else {
                 std::string meah = "unnamed" + VcppBits::StringUtils::toString(i);
                 strncpy(ret, meah.c_str(), 15);
@@ -179,7 +179,7 @@ public:
     void resume () override {
         loadActions();
     }
-    void freeze (IState */*pState*/) override {
+    void freeze (IState * /*pState*/ ) override {
         _actions.clear();
     }
     void unload () override {
@@ -272,8 +272,8 @@ private:
             if (_tree.isInitialized()) {
                 ImGui::PushItemWidth(-13 // 13 is scrollbar width
                                      // assuming font is 2 to 1 (height to width):
-                                     + ImGui::GetFontSize()/2.0 
-                                     * -(float(_longestSettingLength) * 1.05));
+                                     + ImGui::GetFontSize()/2.f 
+                                     * -(float(_longestSettingLength) * 1.05f));
                 renderTreeSettingsUi();
                 ImGui::PopItemWidth();
             }
@@ -396,7 +396,7 @@ private:
         //ui::PushStyleColor(ImGuiCol_FrameBg,
         bool is_default = set.isDefault();
         if(is_default) {
-            ui::PushStyleVar(ImGuiStyleVar_Alpha, 0.45);
+            ui::PushStyleVar(ImGuiStyleVar_Alpha, .45f);
         }
       //  _tree.pauseUpdates();
         switch (set.getType()) {
@@ -468,7 +468,7 @@ private:
         case VcppBits::Setting::TYPE::S_STRING_ONE_OF:
             try {
                 pSetting.setString(pSetting.getString());
-            } catch (const VcppBits::SettingsException& e) {
+            } catch (const VcppBits::SettingsException&) {
                 // revert to what it was
                 pSetting.setString(
                     pSetting.getPossibleStrings()[pSetting.getStringPos()]);

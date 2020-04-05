@@ -29,8 +29,8 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     }
     auto& buffer0 = pDocument.buffers[0];
 
-    const uint32_t space_left =
-        std::numeric_limits<uint32_t>::max() - buffer0.data.size();
+    auto occupied_space = static_cast<uint32_t>(buffer0.data.size());
+    auto space_left = std::numeric_limits<uint32_t>::max() - occupied_space;
     if ((vertex_data_size + index_data_size) > space_left) {
         throw std::runtime_error(
             "fx::gltf::Document::buffer[0] got too big, sorry");
@@ -61,7 +61,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
                 index_buffers[0]->GetShadowData(),
                 index_data_size);
 
-    const uint32_t view0_pos = pDocument.bufferViews.size();
+    const uint32_t view0_pos = static_cast<uint32_t>(pDocument.bufferViews.size());
     pDocument.bufferViews.push_back(view0);
 
     fx::gltf::BufferView view1;
@@ -72,7 +72,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     view1.byteStride = 0;
     view1.target = fx::gltf::BufferView::TargetType::ElementArrayBuffer;
 
-    const uint32_t view1_pos = pDocument.bufferViews.size();
+    const uint32_t view1_pos = static_cast<uint32_t>(pDocument.bufferViews.size());
     pDocument.bufferViews.push_back(view1);
 
 
@@ -97,7 +97,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
             accessor.name = "accessor_vertex_positions";
             accessor.max = { bb.max_.x_, bb.max_.y_, bb.max_.z_ };
             accessor.min = { bb.min_.x_, bb.min_.y_, bb.min_.z_ };
-            primitive.attributes["POSITION"] = pDocument.accessors.size();
+            primitive.attributes["POSITION"] = static_cast<uint32_t>(pDocument.accessors.size());
             break;
         case Urho3D::SEM_NORMAL:
             accessor.byteOffset = el.offset_;
@@ -106,7 +106,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
             accessor.name = "accessor_vertex_normals";
             accessor.max = { 1, 1, 1 };
             accessor.min = { -1, -1, -1 };
-            primitive.attributes["NORMAL"] = pDocument.accessors.size();
+            primitive.attributes["NORMAL"] = static_cast<uint32_t>(pDocument.accessors.size());
             break;
         case Urho3D::SEM_TEXCOORD:
             accessor.byteOffset = el.offset_;
@@ -116,7 +116,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
             accessor.max = { 1, 1 };
             accessor.min = { 0, 0 };
             // TODO: more than 1 texcoord
-            primitive.attributes["TEXCOORD_0"] = pDocument.accessors.size();
+            primitive.attributes["TEXCOORD_0"] = static_cast<uint32_t>(pDocument.accessors.size());
             break;
         //TODO7: other vertex attributes
         case Urho3D::SEM_BINORMAL:
@@ -142,7 +142,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     accessor_indices.max = { float(vertex_count - 1) };
     accessor_indices.min = { 0 };
 
-    primitive.indices = pDocument.accessors.size();
+    primitive.indices = static_cast<uint32_t>(pDocument.accessors.size());
     pDocument.accessors.push_back(accessor_indices);
 
 
@@ -152,6 +152,6 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     pDocument.meshes.push_back(mesh);
 
     fx::gltf::Node node;
-    node.mesh = pDocument.meshes.size() - 1;
+    node.mesh = static_cast<uint32_t>(pDocument.meshes.size()) - 1;
     pDocument.nodes.push_back(node);
 }
