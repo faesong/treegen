@@ -58,12 +58,19 @@ public:
 
         _cameraNode->SetPosition(Urho3D::Vector3(10, 10, 10));
         _cameraNode->LookAt(Urho3D::Vector3(0, 0, 0));
-        // remove fog
+
         auto zone = _scene->GetOrCreateComponent<Urho3D::Zone>();
-        const auto maxfloat = std::numeric_limits<float>::max();
-        zone->SetBoundingBox(Urho3D::BoundingBox(-maxfloat, maxfloat));
-        zone->SetFogStart(maxfloat);
-        zone->SetFogEnd(maxfloat);
+
+        zone->SetBoundingBox(Urho3D::BoundingBox(-100000, 100000));
+        zone->SetFogColor(Urho3D::Color(0.5f, 0.5f, 0.7f));
+        zone->SetFogStart(20.f);
+        zone->SetFogEnd(1000.f);
+
+        // to remove fog:
+        // const auto maxfloat = std::numeric_limits<float>::max();
+        // zone->SetBoundingBox(Urho3D::BoundingBox(-maxfloat, maxfloat));
+        // zone->SetFogStart(maxfloat);
+        // zone->SetFogEnd(maxfloat);
 
         zone->SetAmbientColor(Urho3D::Color(0.4f, 0.4f, 0.4f));
 
