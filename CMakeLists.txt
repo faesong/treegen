@@ -68,7 +68,7 @@ target_link_libraries(treegen VcppBits-SimpleVector)
 #add_subdirectory(C:/wip/rbfx/Source/ThirdParty/Assimp Assimp)
 #target_link_libraries(treegen Assimp)
 
-target_include_directories(treegen PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/contrib")
+target_include_directories(treegen SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/contrib")
 
 
 set_property(TARGET treegen PROPERTY CXX_STANDARD 17)

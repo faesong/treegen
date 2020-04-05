@@ -6,7 +6,7 @@
 struct AppSettings {
     explicit AppSettings (VcppBits::Settings& pSettings)
         : _settings (pSettings),
-          tree_preset (_settings.appendSetting({"_preset", std::string("") })){
+          tree_preset (_settings.appendSetting({"_preset", std::string() })){
         _settings.load();
     }
 

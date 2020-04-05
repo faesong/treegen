@@ -85,7 +85,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
         const auto &el = vert_elements[el_i];
 
         fx::gltf::Accessor accessor;
-        accessor.bufferView = view0_pos;
+        accessor.bufferView = static_cast<int32_t>(view0_pos);
         accessor.count = vertex_count;
         accessor.normalized = false;
 
@@ -101,7 +101,6 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
             break;
         case Urho3D::SEM_NORMAL:
             accessor.byteOffset = el.offset_;
-            accessor.normalized = false;
             accessor.componentType = fx::gltf::Accessor::ComponentType::Float;
             accessor.type = fx::gltf::Accessor::Type::Vec3;
             accessor.name = "accessor_vertex_normals";
@@ -133,7 +132,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     }
 
     fx::gltf::Accessor accessor_indices;
-    accessor_indices.bufferView = view1_pos;
+    accessor_indices.bufferView = static_cast<int32_t>(view1_pos);
     accessor_indices.byteOffset = 0;
     accessor_indices.count = index_count;
     accessor_indices.normalized = false;

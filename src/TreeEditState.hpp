@@ -147,7 +147,7 @@ public:
 
         for (size_t i = 0;; ++i) {
             if (i < 1000) {
-                snprintf (ret + 7, 4, "%03d", i);
+                snprintf (ret + 7, 4, "%03ld", i);
             } else {
                 std::string meah = "unnamed" + VcppBits::StringUtils::toString(i);
                 strncpy(ret, meah.c_str(), 15);
@@ -179,7 +179,7 @@ public:
     void resume () override {
         loadActions();
     }
-    void freeze (IState *pState) override {
+    void freeze (IState */*pState*/) override {
         _actions.clear();
     }
     void unload () override {
@@ -289,7 +289,7 @@ private:
 
     void renderForkingUi () {
         static char preset_name[15];
-        auto dest_len = IM_ARRAYSIZE(preset_name);
+        auto dest_len = static_cast<size_t>(IM_ARRAYSIZE(preset_name));
         auto next_free_preset_name = getNextFreePresetName();
         if (next_free_preset_name.size() >= dest_len) {
             next_free_preset_name = "unnamed";
@@ -317,7 +317,7 @@ private:
         static const char *curr_preset;
         curr_preset = _cfg->tree_preset.getString().c_str();
         if (ui::BeginCombo("Preset", curr_preset, 0)) {
-            for (int i = 0; i < _presets.size(); ++i) {
+            for (size_t i = 0; i < _presets.size(); ++i) {
                 const bool is_selected = (curr_preset == _presets[i]);
                 if (ui::Selectable(_presets[i].c_str(), is_selected)) {
                     _cfg->tree_preset.setString(_presets[i].c_str());
@@ -470,7 +470,8 @@ private:
                 pSetting.setString(pSetting.getString());
             } catch (const VcppBits::SettingsException& e) {
                 // revert to what it was
-                pSetting.setString(pSetting.getPossibleStrings()[pSetting.getStringPos()]);
+                pSetting.setString(
+                    pSetting.getPossibleStrings()[pSetting.getStringPos()]);
             }
             break;
         default:
@@ -491,7 +492,7 @@ private:
         for (auto categ : *(_tree.getConfig())) {
             //URHO3D_LOGINFO(categ.getName().c_str());
 
-            std::string cat_name (categ.getName().c_str());
+            std::string cat_name = categ.getName();
 
             if (!cat_name.size()) {
                 cat_name = "General";
@@ -512,16 +513,16 @@ private:
             ImGui::SameLine();
             ImGui::Text("%d", _statsMsecs);
 
-            ImGui::Text("  Tree | Triangles: %d Vertices: %d",
+            ImGui::Text("  Tree | Triangles: %ld Vertices: %ld",
                         _statsTree.triangles,
                         _statsTree.vertices);
-            ImGui::Text("Leaves | Triangles: %d Vertices: %d",
+            ImGui::Text("Leaves | Triangles: %ld Vertices: %ld",
                         _statsLeaves.triangles,
                         _statsLeaves.vertices);
-            ImGui::Text(" Total | Triangles: %d Vertices: %d",
+            ImGui::Text(" Total | Triangles: %ld Vertices: %ld",
                         _statsSum.triangles,
                         _statsSum.vertices);
-            ImGui::Text("Leaves: %d", _statsNumLeaves);
+            ImGui::Text("Leaves: %ld", _statsNumLeaves);
 
         }
         ui::End();

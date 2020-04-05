@@ -1,3 +1,6 @@
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #include <UrhoBits/UrhoAppFramework/UrhoAppFramework.hpp>
 
 #include <UrhoBits/TreeGenerator/TreeGenerator.hpp>
@@ -58,7 +61,6 @@ public:
         // remove fog
         auto zone = _scene->GetOrCreateComponent<Urho3D::Zone>();
         const auto maxfloat = std::numeric_limits<float>::max();
-        const auto minfloat = std::numeric_limits<float>::min();
         zone->SetBoundingBox(Urho3D::BoundingBox(-maxfloat, maxfloat));
         zone->SetFogStart(maxfloat);
         zone->SetFogEnd(maxfloat);
@@ -74,10 +76,11 @@ private:
 
     Urho3D::Node *_cameraNode = nullptr;
     //MainMenu _mainMenu { context_, &_stateMgr, &_inputMgr };
-    TreeEditState _treeEditState;
 
     VcppBits::Settings _cfg_detail;
     AppSettings _cfg;
+
+    TreeEditState _treeEditState;
 };
 
-URHO3D_DEFINE_APPLICATION_MAIN(TreeGen);
+URHO3D_DEFINE_APPLICATION_MAIN(TreeGen)
