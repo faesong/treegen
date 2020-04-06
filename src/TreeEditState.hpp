@@ -24,6 +24,7 @@
 
 #include "AppSettings.hpp"
 #include "UrhoToGltf.hpp"
+#include "TreeConfigCache.hpp"
 
 // TODO: move to UrhoUtils?
 Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
@@ -84,7 +85,25 @@ public:
                              // events?
           _stateMgr (pStateMgr),
           _inputMgr (pInputMgr),
-          _cfg (pSettings) {
+          _cfg (pSettings),
+          _treeConfigCache (_treeSettings) {
+
+        _tree.setConfig(_treeConfigCache.getTreeConfig());
+
+        auto it = _treeSettings.getSettingsIterator();
+        while (it.isElement()) {
+            it.getCurrent().addUpdateHandler(
+                this,
+                std::bind(&TreeEditState::treeSettingUpdated, this));
+
+            it.peekNext();
+        }
+    }
+
+    void treeSettingUpdated () {
+        if (!_pauseUpdates && _tree.isInitialized()) {
+            _tree.regenerate();
+        }
     }
 
     void processExitPressed () {
@@ -121,21 +140,21 @@ public:
     }
 
     void doReloadTree (){
-        _tree.pauseUpdates(true);
+        _pauseUpdates = true;
 
-        _tree.getConfig()->writeFile();
-        _tree.getConfig()->setFilename(_cfg->tree_preset.getString());
-        _tree.getConfig()->resetAll();
-        _tree.getConfig()->load();
+        _treeSettings.writeFile();
+        _treeSettings.setFilename(_cfg->tree_preset.getString());
+        _treeSettings.resetAll();
+        _treeSettings.load();
 
-        _tree.pauseUpdates(false);
+        _pauseUpdates = false;
 
         Urho3D::Timer tm;
 
         if (!_tree.isInitialized()) {
             _tree.init(_scene, true);
         } else {
-            _tree.settingUpdated();
+            _tree.regenerate();
         }
 
         _statsMsecs = tm.GetMSec(false);
@@ -323,7 +342,7 @@ private:
                 if (ui::Selectable(_presets[i].c_str(), is_selected)) {
                     _cfg->tree_preset.setString(_presets[i].c_str());
                     curr_preset = _cfg->tree_preset.getString().c_str();
-                    _tree.getConfig()->writeFile();
+                    _treeSettings.writeFile();
                     buildTree();
                 }
                 if (is_selected) {
@@ -494,7 +513,7 @@ private:
 
     void renderTreeSettingsUi () {
         int i = 0;
-        for (auto categ : *(_tree.getConfig())) {
+        for (auto categ : _treeSettings) {
             //URHO3D_LOGINFO(categ.getName().c_str());
 
             std::string cat_name = categ.getName();
@@ -533,6 +552,8 @@ private:
         ui::End();
     }
 
+    bool _pauseUpdates = false;
+
     Urho3D::SharedPtr<Urho3D::SystemMessageBox> messageBox_;
 
     VcppBits::StateManager *_stateMgr;
@@ -547,6 +568,9 @@ private:
     UrhoBits::TpsCameraController _camCtl;
 
     AppSettings *_cfg = nullptr; // TODO move
+
+    VcppBits::Settings _treeSettings;
+    TreeConfigCache _treeConfigCache;
 
     ea::vector<ea::string> _presets;
 
