@@ -64,11 +64,31 @@ struct TreeStats {
     size_t triangles{};
 };
 
-TreeStats getStatsFromModel (Urho3D::Model* pModel) {
+TreeStats getModelStats (Urho3D::Model* pModel) {
     TreeStats ret;
 
-    ret.vertices = pModel->GetVertexBuffers()[0]->GetVertexCount();
-    ret.triangles = pModel->GetIndexBuffers()[0]->GetIndexCount() / 3;
+    const auto &vbuffs = pModel->GetVertexBuffers();
+    for (const auto &buf : vbuffs) {
+        ret.vertices += buf->GetVertexCount();
+    }
+
+    const auto &ibuffs = pModel->GetIndexBuffers();
+    for (const auto &buf : ibuffs) {
+        ret.triangles += buf->GetIndexCount() / 3;
+    }
+
+    const auto &geoms = pModel->GetGeometries();
+
+    for(const auto &geoms_ : geoms) {
+        for (const auto& geom : geoms_) {
+            const auto& g_vbuffs = geom->GetVertexBuffers();
+            for (const auto& buf : g_vbuffs) {
+                ret.vertices += buf->GetVertexCount();
+            }
+
+            ret.triangles += geom->GetIndexBuffer()->GetIndexCount() / 3;
+        }
+    }
 
     return ret;
 }
@@ -225,8 +245,8 @@ public:
 
 private:
     void updateModelStats () {
-        _statsTree = getStatsFromModel(_tree.getModels().first.Get());
-        _statsLeaves = getStatsFromModel(_tree.getModels().second.Get());
+        _statsTree = getModelStats(_tree.getModels().first.Get());
+        _statsLeaves = getModelStats(_tree.getModels().second.Get());
         _statsSum = { _statsTree.vertices + _statsLeaves.vertices,
                       _statsTree.triangles + _statsLeaves.triangles };
         _statsNumLeaves = _tree.getNumLeaves();

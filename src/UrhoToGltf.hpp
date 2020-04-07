@@ -2,25 +2,21 @@
 
 #include  <fx/gltf.h>
 
-void appendModelToGltfDocument (fx::gltf::Document &pDocument,
-                                Urho3D::SharedPtr<Urho3D::Model> &pModel) {
-    auto vertex_buffers = pModel->GetVertexBuffers();
-    auto descr = vertex_buffers[0]->GetElements();
-    for (auto el : descr) {
-        URHO3D_LOGINFO(std::to_string(int(el.index_)).c_str());
-    }
-    auto index_buffers = pModel->GetIndexBuffers();
-
-    const uint32_t vertex_size = vertex_buffers[0]->GetVertexSize();
-    const uint32_t vertex_count = vertex_buffers[0]->GetVertexCount();
+fx::gltf::Primitive appendPrimitiveToGltfDocument (
+        fx::gltf::Document &pDocument,
+        Urho3D::VertexBuffer *pVertexBuffer,
+        Urho3D::IndexBuffer *pIndexBuffer,
+        const Urho3D::BoundingBox &pBounds) {
+    const uint32_t vertex_size = pVertexBuffer->GetVertexSize();
+    const uint32_t vertex_count = pVertexBuffer->GetVertexCount();
     const uint32_t vertex_data_size = vertex_count * vertex_size;
 
-    const uint32_t index_count = index_buffers[0]->GetIndexCount();
+    const uint32_t index_count = pIndexBuffer->GetIndexCount();
     const uint32_t index_data_size =
-        index_count * index_buffers[0]->GetIndexSize();
+        index_count * pIndexBuffer->GetIndexSize();
 
     if (vertex_count == 0) {
-        return;
+        throw;
     }
 
     // TODO3: only 1 buffer supported for now
@@ -46,7 +42,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     buffer0.byteLength = buffer0_new_size;
 
     std::memcpy(buffer0.data.data() + buffer0_prev_size,
-                vertex_buffers[0]->GetShadowData(),
+                pVertexBuffer->GetShadowData(),
                 vertex_data_size);
 
     fx::gltf::BufferView view0;
@@ -58,7 +54,7 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     view0.target = fx::gltf::BufferView::TargetType::ArrayBuffer;
 
     std::memcpy(buffer0.data.data() + buffer0_prev_size + vertex_data_size,
-                index_buffers[0]->GetShadowData(),
+                pIndexBuffer->GetShadowData(),
                 index_data_size);
 
     const uint32_t view0_pos = static_cast<uint32_t>(pDocument.bufferViews.size());
@@ -75,12 +71,9 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     const uint32_t view1_pos = static_cast<uint32_t>(pDocument.bufferViews.size());
     pDocument.bufferViews.push_back(view1);
 
-
-    auto bb = pModel->GetBoundingBox();
-
     fx::gltf::Primitive primitive;
 
-    auto vert_elements = vertex_buffers[0]->GetElements();
+    auto vert_elements = pVertexBuffer->GetElements();
     for (size_t el_i = 0; el_i < vert_elements.size(); ++el_i) {
         const auto &el = vert_elements[el_i];
 
@@ -88,6 +81,8 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
         accessor.bufferView = static_cast<int32_t>(view0_pos);
         accessor.count = vertex_count;
         accessor.normalized = false;
+
+        const auto& bb = pBounds;
 
         switch (el.semantic_) {
         case Urho3D::SEM_POSITION:
@@ -145,10 +140,44 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     primitive.indices = static_cast<uint32_t>(pDocument.accessors.size());
     pDocument.accessors.push_back(accessor_indices);
 
+    return primitive;
+}
 
+void appendModelToGltfDocument (fx::gltf::Document &pDocument,
+                                Urho3D::SharedPtr<Urho3D::Model> &pModel) {
     fx::gltf::Mesh mesh;
     mesh.name = "meshname";
-    mesh.primitives = { primitive };
+
+    auto vertex_buffers = pModel->GetVertexBuffers();
+    auto index_buffers = pModel->GetIndexBuffers();
+
+    if (index_buffers.size() != vertex_buffers.size()) {
+        throw std::runtime_error("IndexBuffers.size() != VertexBuffers.size()");
+    }
+
+    for (decltype(index_buffers.size()) i = 0; i < index_buffers.size(); ++i) {
+        mesh.primitives.push_back(
+            appendPrimitiveToGltfDocument(pDocument,
+                                          vertex_buffers[i],
+                                          index_buffers[i],
+                                          // TODO proper bounds
+                                          pModel->GetBoundingBox()));
+    }
+
+    const auto &geoms = pModel->GetGeometries();
+
+    for(const auto &geoms_ : geoms) {
+        for (const auto& geom : geoms_) {
+            const auto& g_vbuffs = geom->GetVertexBuffers();
+            // TODO taking first lod vertex buffer only?
+            mesh.primitives.push_back(
+                appendPrimitiveToGltfDocument(pDocument,
+                                              g_vbuffs[0],
+                                              geom->GetIndexBuffer(),
+                                              pModel->GetBoundingBox()));
+        }
+    }
+
     pDocument.meshes.push_back(mesh);
 
     fx::gltf::Node node;
