@@ -260,8 +260,6 @@ private:
     }
 
     void exportModel () {
-        fx::gltf::Document helmet = fx::gltf::LoadFromBinary("box-gltf.glb");
-
         auto models = _tree.getModels();
 
         fx::gltf::Document exp;
