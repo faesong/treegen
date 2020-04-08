@@ -26,6 +26,12 @@ public:
           _treeEditState(pContext, &_stateMgr, &_inputMgr, &_cfg) {
     }
 
+    void setup () override {
+        engineParameters_[Urho3D::EP_MULTI_SAMPLE] = 8;
+        engineParameters_[Urho3D::EP_FRAME_LIMITER] = true;
+        engineParameters_[Urho3D::EP_REFRESH_RATE] = 200;
+    }
+
     void start () override {
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= (ImGuiConfigFlags_DockingEnable);
