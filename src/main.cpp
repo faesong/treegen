@@ -53,6 +53,7 @@ public:
 
         Urho3D::Light* light = lightNode->CreateComponent<Urho3D::Light>();
         light->SetLightType(Urho3D::LightType::LIGHT_DIRECTIONAL);
+        light->SetCastShadows(true);
 
 
         _cameraNode = _scene->CreateChild("Camera");
