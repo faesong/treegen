@@ -69,11 +69,13 @@ struct TreeConfigCache {
                _add(_cfg.appendSetting(Setting(is + ".length_multiplier", 0.f, 10.f, 0.3f)),
                     &_ch.levels[i].length_multiplier);
                _add(_cfg.appendSetting(Setting(is + ".length_distribution_circle", 0.f, 1.f, 0.8f)),
-                    &_ch.levels[i].circle_function_k);
+                    &_ch.levels[i].length_distribution_circle);
                _add(_cfg.appendSetting(Setting(is + ".length_distribution_cone", -1.f, 1.f, 0.0f)),
-                    &_ch.levels[i].conical_cfg);
+                    &_ch.levels[i].length_distribution_cone);
                _add(_cfg.appendSetting(Setting(is + ".length_distribution_flame", 0.f, 1.f, 0.0f)),
-                    &_ch.levels[i].flame_k);
+                    &_ch.levels[i].length_distribution_flame);
+               _add(_cfg.appendSetting(Setting(is + ".length_distribution_random", 0.f, 1.f, 0.1f)),
+                    &_ch.levels[i].length_distribution_random);
                _add(_cfg.appendSetting(Setting(is + ".radius_multiplier", .1f, 1.f, .35f)),
                     &_ch.levels[i].branching_radius_multiplier);
                _add(_cfg.appendSetting(Setting(is + ".direction_outward", 0.f, 1.f, 0.9f)),

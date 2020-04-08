@@ -276,8 +276,8 @@ private:
     void exportUrhoModel () {
         auto models = _tree.getModels();
         const auto ts = getTimestamp();
-        models.first->SaveFile(ea::string("trunc-") + getTimestamp().c_str() + ".mdl");
-        models.second->SaveFile(ea::string("leaves-") + getTimestamp().c_str() + ".mdl");
+        models.first->SaveFile(ea::string("trunc-") + ts.c_str() + ".mdl");
+        models.second->SaveFile(ea::string("leaves-") + ts.c_str() + ".mdl");
     }
 
 
