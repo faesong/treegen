@@ -362,6 +362,10 @@ private:
                 _presets.push_back(ea::string(preset_name) + ".tree.ini");
                 // TODO refactor and use "setPreset()" function
                 _cfg->tree_preset.setString(_presets.back().c_str());
+                // for now we just write what we had, instead of asking save/no?
+                // should add some versioning mechanism for each tree tho...
+                _treeSettings.writeFile();
+                _treeSettings.setFilename(_cfg->tree_preset.getString());
 
                 doReloadTree();
             }
