@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <filesystem>
 
 #include <Urho3D/SystemUI/Console.h>
 #include <Urho3D/SystemUI/SystemUI.h>
@@ -10,6 +11,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Core/Timer.h>
+#include <Urho3D/IO/Log.h>
 
 #include <VcppBits/MathUtils/MathUtils.hpp>
 #include <VcppBits/StringUtils/StringUtils.hpp>
@@ -159,10 +161,11 @@ public:
         }
     }
 
-    void doReloadTree (){
+    void doReloadTree (bool pSave = true){
         _pauseUpdates = true;
-
-        _treeSettings.writeFile();
+        if (pSave) {
+            _treeSettings.writeFile();
+        }
         _treeSettings.setFilename(_cfg->tree_preset.getString());
         _treeSettings.resetAll();
         _treeSettings.load();
@@ -319,7 +322,9 @@ private:
                 demo_open ^= true;
 
             if (_isForking) {
-                renderForkingUi();
+                renderForkingRenamingUi(true);
+            } else if (_isRenaming) {
+                renderForkingRenamingUi(false);
             } else {
                 renderPresetUi();
             }
@@ -343,17 +348,27 @@ private:
         }
     }
 
-    void renderForkingUi () {
-        static char preset_name[15];
+    void renderForkingRenamingUi (bool pForking) {
+        static char preset_name[255];
         auto dest_len = static_cast<size_t>(IM_ARRAYSIZE(preset_name));
-        auto next_free_preset_name = getNextFreePresetName();
-        if (next_free_preset_name.size() >= dest_len) {
-            next_free_preset_name = "unnamed";
+        std::string new_name;
+
+        const auto old_path = _cfg->tree_preset.getString();
+        const auto old_name = old_path.substr(0, old_path.size() - 9);
+
+        if (pForking) {
+            new_name = getNextFreePresetName();
+        } else {
+            new_name = old_name;
         }
-        strncpy(preset_name, next_free_preset_name.c_str(), next_free_preset_name.size());
-        ui::InputText("New preset name",
-                      preset_name,
-                      dest_len);
+
+        if (new_name.size() >= dest_len) {
+            new_name = "unnamed";
+        }
+
+        strncpy(preset_name, new_name.c_str(), new_name.size());
+
+        ui::InputText("New preset name", preset_name, dest_len);
         if (ui::IsItemDeactivated()) {
             if (findPreset(ea::string(preset_name) + ".tree.ini")
                 != _presets.end()) {
@@ -364,12 +379,28 @@ private:
                 _cfg->tree_preset.setString(_presets.back().c_str());
                 // for now we just write what we had, instead of asking save/no?
                 // should add some versioning mechanism for each tree tho...
-                _treeSettings.writeFile();
+                if (_isForking) {
+                    // no need to save file on rename
+                    _treeSettings.writeFile();
+                }
+
+                if (_isRenaming) {
+                    auto it = findPreset(old_path.c_str());
+                    if (it != _presets.end()) {
+                        _presets.erase(it);
+                    }
+                    std::filesystem::rename(
+                        std::filesystem::path(old_path),
+                        std::filesystem::path(_cfg->tree_preset.getString()));
+                }
+
                 _treeSettings.setFilename(_cfg->tree_preset.getString());
 
                 doReloadTree();
             }
+
             _isForking = false;
+            _isRenaming = false;
         }
     }
 
@@ -397,10 +428,23 @@ private:
         }
         ui::SameLine();
         if (ui::Button("rename")) {
-            // TODO
+            _isRenaming = true;
         }
         ui::SameLine();
         if (ui::Button("x")) {
+            try {
+                std::filesystem::create_directories("trash");
+            }
+            catch (std::exception& e) {
+                URHO3D_LOGINFO(e.what());
+            }
+
+            const auto old_path = _cfg->tree_preset.getString();
+
+            std::filesystem::rename(
+                std::filesystem::path(old_path),
+                std::filesystem::path("trash/" + old_path));
+
             auto it = findPreset(getCurrentPreset());
             if (it != _presets.end()) {
                 auto switch_to = getAnotherPreset(it);
@@ -409,7 +453,7 @@ private:
                     ea::advance(switch_to, -1);
                 }
                 _cfg->tree_preset.setString(switch_to->c_str());
-                doReloadTree();
+                doReloadTree(false);
             }
         }
     }
@@ -626,6 +670,7 @@ private:
     size_t _longestSettingLength = 5;
 
     bool _isForking = false;
+    bool _isRenaming = false;
 
     size_t _framesPassed = 0;
     float _frameTimesPassed = 0.f;
