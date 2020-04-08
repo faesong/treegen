@@ -164,17 +164,27 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
                                           pModel->GetBoundingBox()));
     }
 
-    const auto &geoms = pModel->GetGeometries();
+    if (false) {
+        // https://discourse.urho3d.io/t/need-a-bit-of-clarification-on-how-models-vertexbuffers-and-geometries-organized/6070/2
 
-    for(const auto &geoms_ : geoms) {
-        for (const auto& geom : geoms_) {
-            const auto& g_vbuffs = geom->GetVertexBuffers();
-            // TODO taking first lod vertex buffer only?
-            mesh.primitives.push_back(
-                appendPrimitiveToGltfDocument(pDocument,
-                                              g_vbuffs[0],
-                                              geom->GetIndexBuffer(),
-                                              pModel->GetBoundingBox()));
+        // as I understan, proper Urho3D::Model has all the vertex/index
+        // buffers' pointers from each geometry copied to Model itself too.
+        // so this whole block of code is disabled.
+
+        // but it is left here just in case... for now, urho exports only data
+        // which is doubled in Model itself, so we stay consistant with that
+        const auto &geoms = pModel->GetGeometries();
+
+        for(const auto &geoms_ : geoms) {
+            for (const auto& geom : geoms_) {
+                const auto& g_vbuffs = geom->GetVertexBuffers();
+                // TODO taking first lod vertex buffer only?
+                mesh.primitives.push_back(
+                    appendPrimitiveToGltfDocument(pDocument,
+                                                  g_vbuffs[0],
+                                                  geom->GetIndexBuffer(),
+                                                  pModel->GetBoundingBox()));
+            }
         }
     }
 
