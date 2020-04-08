@@ -72,3 +72,29 @@ target_include_directories(treegen SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/c
 
 
 set_property(TARGET treegen PROPERTY CXX_STANDARD 17)
+
+
+#symlink stuff
+if (CMAKE_HOST_WIN32)
+  set (NULL_DEVICE nul)
+  if (NOT DEFINED HAS_MKLINK)
+    # Test whether the host system is capable of setting up symbolic link
+    execute_process (COMMAND cmd /C mklink test-link CMakeCache.txt WORKING_DIRECTORY ${CMAKE_BINARY_DIR} RESULT_VARIABLE MKLINK_EXIT_CODE OUTPUT_QUIET ERROR_QUIET)
+    if (MKLINK_EXIT_CODE EQUAL 0)
+      set (HAS_MKLINK TRUE)
+      file (REMOVE ${CMAKE_BINARY_DIR}/test-link)
+    else ()
+      set (HAS_MKLINK FALSE)
+    endif()
+    set (HAS_MKLINK ${HAS_MKLINK} CACHE INTERNAL "MKLINK capability")
+  endif ()
+endif ()
+
+
+if (HAS_MKLINK)
+  execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/Data ${CMAKE_BINARY_DIR}/Data)
+
+  execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/CoreData ${CMAKE_BINARY_DIR}/CoreData)
+else ()
+  message(WARNING "MKLINK is not working properly, copy/link data yourself")
+endif()
