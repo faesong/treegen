@@ -241,6 +241,13 @@ public:
             }
         }
         renderUi();
+
+        ++_framesPassed;
+        _frameTimesPassed += pTimeStep;
+
+        if (_frameTimesPassed >= 1.f) {
+            _fps = float(_framesPassed) / _frameTimesPassed;
+        }
     }
 
 private:
@@ -552,6 +559,10 @@ private:
     }
 
     void renderStats () {
+        if (ui::Begin("Fps", 0, 0)) {
+            ImGui::Text("%f", _fps);
+        }
+        ui::End();
         if (ui::Begin("Stats", 0, 0)) {
             ImGui::Text("Generated in (msecs):");
             ImGui::SameLine();
@@ -602,4 +613,8 @@ private:
     size_t _longestSettingLength = 5;
 
     bool _isForking = false;
+
+    size_t _framesPassed = 0;
+    float _frameTimesPassed = 0.f;
+    float _fps = 0.f;
 };
