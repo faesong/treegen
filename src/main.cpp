@@ -67,6 +67,13 @@ public:
         }
     }
 
+    void initPostProcessingSettings () {
+        onAutoExposureSettingUpdate();
+        onSsaoSettingUpdate();
+        onFxaaSettingUpdate();
+        onVibranceSettingUpdate();
+    }
+
     void setup () override {
         engineParameters_[Urho3D::EP_MULTI_SAMPLE] = 8;
         engineParameters_[Urho3D::EP_FRAME_LIMITER] = true;
@@ -138,10 +145,6 @@ public:
         _renderPath->Append(cache->GetResource<Urho3D::XMLFile>("PostProcess/AutoExposure.xml"));
         _renderPath->Append(cache->GetResource<Urho3D::XMLFile>("PostProcess/FXAA3.xml"));
         _renderPath->Append(cache->GetResource<Urho3D::XMLFile>("PostProcess/Vibrance.xml"));
-
-        onAutoExposureSettingUpdate();
-        onSsaoSettingUpdate();
-        onVibranceSettingUpdate();
     }
 
 private:

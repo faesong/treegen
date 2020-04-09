@@ -32,10 +32,11 @@ public:
     std::string getName () const override { return "RootState"; }
 
     void update (const float /*pTimeStep*/) override {
+        renderDockSpaceUi();
         renderSettingsUi();
     }
 
-    void renderSettingsUi () {
+    void renderDockSpaceUi () {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->Pos);
         ImGui::SetNextWindowSize(viewport->Size);
@@ -61,12 +62,14 @@ public:
         ui::PopStyleVar(); // rounding
         ui::PopStyleVar(); // padding
 
+        ImGui::End();
+    }
+
+    void renderSettingsUi () {
         if (ui::Begin("Settings", 0, 0)) {
             render_settings_ui (&_settings->_settings, nullptr);
         }
         ui::End();
-
-        ImGui::End();
     }
 
 private:
