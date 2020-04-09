@@ -289,7 +289,7 @@ private:
         ui::SetNextWindowPos(ImVec2(100,
                                     100),
                              ImGuiCond_FirstUseEver);
-        if (ui::Begin("Tree Settings", 0, 0)) {
+        if (ui::Begin("Tree", 0, 0)) {
             if (ui::Button("Export")) {
                 exportModel();
             }
