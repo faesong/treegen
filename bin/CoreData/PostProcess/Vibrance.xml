@@ -1,0 +1,7 @@
+<renderpath>
+  <command type="quad" tag="Vibrance" vs="Vibrance" ps="Vibrance" output="viewport">
+    <parameter name="VibranceStrength" value="0.1" />
+    <texture unit="diffuse" name="viewport" />
+  </command>
+</renderpath>
+

@@ -27,6 +27,7 @@
 #include "AppSettings.hpp"
 #include "UrhoToGltf.hpp"
 #include "TreeConfigCache.hpp"
+#include "SettingsUi.hpp"
 
 // TODO: move to UrhoUtils?
 Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
@@ -227,7 +228,7 @@ public:
     void unload () override {
         _actions.clear();
     }
-    std::string getName () const override { return "MainMenu"; }
+    std::string getName () const override { return "TreeEditState"; }
 
     void update (const float pTimeStep) override {
         ImGuiContext& g = *GImGui;
@@ -335,7 +336,7 @@ private:
                                      // assuming font is 2 to 1 (height to width):
                                      + ImGui::GetFontSize()/2.f 
                                      * -(float(_longestSettingLength) * 1.05f));
-                renderTreeSettingsUi();
+                render_settings_ui (&_treeSettings, &_longestSettingLength);
                 ImGui::PopItemWidth();
             }
         }
@@ -346,6 +347,7 @@ private:
         if (demo_open) {
             ui::ShowDemoWindow(&demo_open);
         }
+
     }
 
     void renderForkingRenamingUi (bool pForking) {
@@ -483,136 +485,11 @@ private:
         return ea::string(_cfg->tree_preset.getString().c_str());
     }
 
-    void renderSettingUi (VcppBits::Setting& pSetting, int x_id) {
-        auto& set = pSetting; // todo shortcut/refactor
 
-        ui::PushID(x_id);
-        if (ui::Button("x")) {
-            set.resetToDefault();
-        }
-        ui::PopID();
-        ui::SameLine();
-
-        const auto curr_set_text =
-            ea::string(set.getAsString().c_str());
-        // x,y,z,w
-        //ImVec4 tint = GetStyleColorVec4
-        //ui::PushStyleColor(ImGuiCol_FrameBg,
-        bool is_default = set.isDefault();
-        if(is_default) {
-            ui::PushStyleVar(ImGuiStyleVar_Alpha, .45f);
-        }
-      //  _tree.pauseUpdates();
-        switch (set.getType()) {
-        case VcppBits::Setting::TYPE::S_BOOL:
-            if (ui::Checkbox(set.getName().c_str(),
-                             set.getBoolPtr())) {
-                clampSetting(set);
-            }
-            break;
-        case VcppBits::Setting::TYPE::S_INTEGER:
-            if (ui::InputInt(set.getName().c_str(),
-                             set.getIntPtr(),
-                             0, // step?
-                             0)) { // stepfast??
-                clampSetting(set);
-            }
-            break;
-        case VcppBits::Setting::TYPE::S_INTEGER_BOUNDED:
-            if (ui::DragInt(set.getName().c_str(),
-                            set.getIntPtr(),
-                            0.1f, // TODO figure out proper speed
-                            set.getIntDown(),
-                            set.getIntUp())) {
-                clampSetting(set);
-            }
-            break;
-        case VcppBits::Setting::TYPE::S_FLOATINGPOINT:
-            if (ui::InputFloat(set.getName().c_str(),
-                               set.getFloatPtr(),
-                               0.025f,
-                               1.0f)) {
-                clampSetting(set);
-            }
-            break;
-        case VcppBits::Setting::TYPE::S_FLOATINGPOINT_BOUNDED:
-            if (ui::DragFloat(set.getName().c_str(),
-                              set.getFloatPtr(),
-                              0.025f, // TODO figure out proper speed
-                              set.getFloatDown(),
-                              set.getFloatUp())) {
-                clampSetting(set);
-            }
-            break;
-        default:
-            ui::Text("%s", curr_set_text.c_str());
-        }
-        // TODO: don't do this every damn frame..
-        if (set.getName().size() > _longestSettingLength) {
-            _longestSettingLength = set.getName().size();
-        }
-        if (is_default) {
-            ui::PopStyleVar(1);
-        }
-    }
-
-    void clampSetting(VcppBits::Setting& pSetting) {
-        Urho3D::Timer tm;
-        switch (pSetting.getType()) {
-        case VcppBits::Setting::TYPE::S_INTEGER_BOUNDED:
-            pSetting.setInt(VcppBits::MathUtils::clamp(pSetting.getInt(),
-                                                       pSetting.getIntDown(),
-                                                       pSetting.getIntUp()));
-            break;
-        case VcppBits::Setting::TYPE::S_FLOATINGPOINT_BOUNDED:
-            pSetting.setFloat(VcppBits::MathUtils::clamp(pSetting.getFloat(),
-                                                         pSetting.getFloatDown(),
-                                                         pSetting.getFloatUp()));
-            break;
-        case VcppBits::Setting::TYPE::S_STRING_ONE_OF:
-            try {
-                pSetting.setString(pSetting.getString());
-            } catch (const VcppBits::SettingsException&) {
-                // revert to what it was
-                pSetting.setString(
-                    pSetting.getPossibleStrings()[pSetting.getStringPos()]);
-            }
-            break;
-        default:
-            // do nothing otherwise
-            break;
-        }
-        if (0)
-        for (int i = 0; i < 200; ++i) {
-            pSetting.setInt(pSetting.getInt());
-        }
-        _statsMsecs = tm.GetMSec(false);
-        onModelUpdated();
-    }
 
     void onModelUpdated () {
         updateModelStats();
         _camCtl.setPointOfInterest(_tree.getTruncBoundingBox().Center());
-    }
-
-    void renderTreeSettingsUi () {
-        int i = 0;
-        for (auto categ : _treeSettings) {
-            //URHO3D_LOGINFO(categ.getName().c_str());
-
-            std::string cat_name = categ.getName();
-
-            if (!cat_name.size()) {
-                cat_name = "General";
-            }
-
-            if (ui::CollapsingHeader(cat_name.c_str())) {
-                for (auto &set : categ) {
-                    renderSettingUi(set, i);
-                    ++i;
-                }
-            }
-        }
     }
 
     void renderStats () {
@@ -667,7 +544,7 @@ private:
     TreeStats _statsLeaves;
     TreeStats _statsSum;
     size_t _statsNumLeaves = 0;
-    size_t _longestSettingLength = 5;
+    size_t _longestSettingLength = 0;
 
     bool _isForking = false;
     bool _isRenaming = false;
