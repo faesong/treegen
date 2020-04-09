@@ -142,23 +142,6 @@ public:
         onAutoExposureSettingUpdate();
         onSsaoSettingUpdate();
         onVibranceSettingUpdate();
-
-        Urho3D::Vector2 screenSize(GetSubsystem<Urho3D::Graphics>()->GetWidth(), GetSubsystem<Urho3D::Graphics>()->GetHeight());
-        GetSubsystem<Urho3D::Renderer>()->GetViewport(0)->GetRenderPath()->SetShaderParameter("ScreenSize", screenSize);
-
-        SubscribeToEvent(Urho3D::E_SCREENMODE,URHO3D_HANDLER(TreeGen,
-                                                             screenSizeChanged));
-    }
-
-    void screenSizeChanged (Urho3D::StringHash eventType,
-                            Urho3D::VariantMap& eventData) {
-        int w=eventData[Urho3D::ScreenMode::P_WIDTH].GetInt();
-        int h=eventData[Urho3D::ScreenMode::P_HEIGHT].GetInt();
-
-        Urho3D::Vector2 screenSize(w, h);
-
-        GetSubsystem<Urho3D::Renderer>()->GetViewport(0)->GetRenderPath()->SetShaderParameter("ScreenSize", screenSize);
-
     }
 
 private:
