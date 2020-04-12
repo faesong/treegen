@@ -37,18 +37,43 @@ public:
             this, std::bind(&TreeGen::onVibranceSettingUpdate, this));
         _cfg.fxaa.addUpdateHandler(
             this, std::bind(&TreeGen::onFxaaSettingUpdate, this));
+        _cfg.ambient.addUpdateHandler(
+            this, std::bind(&TreeGen::onAmbientSettingUpdate, this));
+        _cfg.fog_color.addUpdateHandler(
+            this, std::bind(&TreeGen::onFogColorSettingUpdate, this));
+        _cfg.shadow_intensity.addUpdateHandler(
+            this, std::bind(&TreeGen::onShadowIntensitySettingUpdate, this));
+        _cfg.light_direction.addUpdateHandler(
+            this, std::bind(&TreeGen::onLightDirectionSettingUpdate, this));
+    }
+
+
+    void onAmbientSettingUpdate () {
+        _zone->SetAmbientColor(Urho3D::Color(_cfg.ambient_vector3));
+    }
+
+    void onLightDirectionSettingUpdate () {
+        _light->GetNode()->SetDirection(_cfg.light_direction_vector3);
+    }
+
+    void onFogColorSettingUpdate () {
+        _zone->SetFogColor(Urho3D::Color(_cfg.fog_color_vector3));
+    }
+
+    void onShadowIntensitySettingUpdate () {
+        _light->SetShadowIntensity(_cfg.shadow_intensity_float);
     }
 
     void onAutoExposureSettingUpdate () {
-        _renderPath->SetEnabled("AutoExposure", _cfg.auto_exposure.getBool());
+        _renderPath->SetEnabled("AutoExposure", _cfg.auto_exposure.getValue<V2::BoolValue>());
     }
 
     void onFxaaSettingUpdate () {
-        _renderPath->SetEnabled("FXAA3", _cfg.fxaa.getBool());
+        _renderPath->SetEnabled("FXAA3", _cfg.fxaa.getValue<V2::BoolValue>());
     }
 
     void onSsaoSettingUpdate () {
-        const float ssao = _cfg.ssao.getFloat();
+        const float ssao = _cfg.ssao.getValue<V2::FloatValue>();
         if (ssao > 0.f) {
             _renderPath->SetEnabled("Ssao", true);
             _renderPath->SetShaderParameter("SsaoStrength", ssao);
@@ -58,7 +83,7 @@ public:
     }
 
     void onVibranceSettingUpdate () {
-        const float vibr = _cfg.vibrance.getFloat();
+        const float vibr = _cfg.vibrance.getValue<V2::FloatValue>();
         if (vibr > 0.f) {
             _renderPath->SetEnabled("Vibrance", true);
             _renderPath->SetShaderParameter("VibranceStrength", vibr);
@@ -105,12 +130,12 @@ public:
         _scene->CreateComponent<Urho3D::Octree>();
 
         Urho3D::Node* lightNode = _scene->CreateChild("DirectionalLight");
-        lightNode->SetDirection(Urho3D::Vector3(1.f, -0.3f, 0.f));
+        lightNode->SetDirection(_cfg.light_direction_vector3);
 
-        Urho3D::Light* light = lightNode->CreateComponent<Urho3D::Light>();
-        light->SetLightType(Urho3D::LightType::LIGHT_DIRECTIONAL);
-        light->SetCastShadows(true);
-        light->SetShadowIntensity(0.0);
+        _light = lightNode->CreateComponent<Urho3D::Light>();
+        _light->SetLightType(Urho3D::LightType::LIGHT_DIRECTIONAL);
+        _light->SetCastShadows(true);
+        _light->SetShadowIntensity(_cfg.shadow_intensity_float);
 
 
         _cameraNode = _scene->CreateChild("Camera");
@@ -123,12 +148,12 @@ public:
         _cameraNode->SetPosition(Urho3D::Vector3(10, 10, 10));
         _cameraNode->LookAt(Urho3D::Vector3(0, 0, 0));
 
-        auto zone = _scene->GetOrCreateComponent<Urho3D::Zone>();
+        _zone = _scene->GetOrCreateComponent<Urho3D::Zone>();
 
-        zone->SetBoundingBox(Urho3D::BoundingBox(-100000, 100000));
-        zone->SetFogColor(Urho3D::Color(0.5f, 0.5f, 0.7f));
-        zone->SetFogStart(20.f);
-        zone->SetFogEnd(1000.f);
+        _zone->SetBoundingBox(Urho3D::BoundingBox(-100000, 100000));
+        _zone->SetFogColor(Urho3D::Color(_cfg.fog_color_vector3));
+        _zone->SetFogStart(20.f);
+        _zone->SetFogEnd(1000.f);
 
         // to remove fog:
         // const auto maxfloat = std::numeric_limits<float>::max();
@@ -136,7 +161,7 @@ public:
         // zone->SetFogStart(maxfloat);
         // zone->SetFogEnd(maxfloat);
 
-        zone->SetAmbientColor(Urho3D::Color(0.45, 0.45, 0.5));
+        _zone->SetAmbientColor(Urho3D::Color(_cfg.ambient_vector3));
 
         cache->SetAutoReloadResources(true);
 
@@ -145,6 +170,8 @@ public:
         _renderPath->Append(cache->GetResource<Urho3D::XMLFile>("PostProcess/AutoExposure.xml"));
         _renderPath->Append(cache->GetResource<Urho3D::XMLFile>("PostProcess/FXAA3.xml"));
         _renderPath->Append(cache->GetResource<Urho3D::XMLFile>("PostProcess/Vibrance.xml"));
+
+        initPostProcessingSettings();
     }
 
 private:
@@ -153,13 +180,15 @@ private:
     Urho3D::Node *_cameraNode = nullptr;
     //MainMenu _mainMenu { context_, &_stateMgr, &_inputMgr };
 
-    VcppBits::Settings _cfg_detail;
+    Settings2 _cfg_detail;
     AppSettings _cfg;
 
     RootState _rootState;
     TreeEditState _treeEditState;
 
     Urho3D::RenderPath *_renderPath;
+    Urho3D::Zone *_zone;
+    Urho3D::Light *_light;
 };
 
 URHO3D_DEFINE_APPLICATION_MAIN(TreeGen)

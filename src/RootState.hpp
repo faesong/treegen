@@ -67,7 +67,7 @@ public:
 
     void renderSettingsUi () {
         if (ui::Begin("Settings", 0, 0)) {
-            render_settings_ui (&_settings->_settings, nullptr);
+            render_settings2_ui (&_settings->_settings, nullptr);
         }
         ui::End();
     }

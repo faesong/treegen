@@ -139,3 +139,109 @@ void render_settings_ui (VcppBits::Settings * pSettings,
         }
     }
 }
+
+void render_setting2_ui(std::string pName,
+    Setting2* pSetting,
+    int x_id) {
+    auto& set = *pSetting; // todo shortcut/refactor
+
+    ui::PushID(x_id);
+    if (ui::Button("x")) {
+        set.resetToDefault();
+    }
+    ui::PopID();
+    ui::SameLine();
+
+    const auto curr_set_text =
+        ea::string(set.getAsString().c_str());
+    // x,y,z,w
+    //ImVec4 tint = GetStyleColorVec4
+    //ui::PushStyleColor(ImGuiCol_FrameBg,
+    bool is_default = set.isDefault();
+    if (is_default) {
+        ui::PushStyleVar(ImGuiStyleVar_Alpha, .45f);
+    }
+    //  _tree.pauseUpdates();
+    switch (set.getType()) {
+    case SettingTypeEnum::BOOL:
+        if (ui::Checkbox(pName.c_str(),
+            set.getUpdatePtr<V2::BoolValue>())) {
+            set.updateFromPtr();
+        }
+        break;
+    case SettingTypeEnum::INT:
+        if (ui::DragInt(pName.c_str(),
+                        set.getUpdatePtr<V2::IntValue>(),
+                        1, // TODO figure out proper speed
+                        set.getConstraint<V2::IntValue>()._min,
+                        set.getConstraint<V2::IntValue>()._max)) {
+            set.updateFromPtr();
+        }
+        break;
+    case SettingTypeEnum::FLOAT:
+        if (ui::DragFloat(pName.c_str(),
+            set.getUpdatePtr<V2::FloatValue>(),
+            .01f, // TODO figure out proper speed
+            set.getConstraint<V2::FloatValue>()._min,
+            set.getConstraint<V2::FloatValue>()._max)) {
+            set.updateFromPtr();
+        }
+        break;
+    case SettingTypeEnum::VECTOR3:
+        if (pName.find("_color") < pName.size()) {
+            if (ui::ColorEdit3(pName.c_str(),
+                (float*)set.getUpdatePtr<Vector3Value>())) {
+                set.updateFromPtr();
+            }
+        }
+        else {
+            if (ui::DragFloat3(pName.c_str(),
+                (float*)set.getUpdatePtr<Vector3Value>(),
+                .01f, // TODO figure out proper speed
+                set.getConstraint<Vector3Value>()._min.x_,
+                set.getConstraint<Vector3Value>()._max.x_)) {
+                set.updateFromPtr();
+            }
+        }
+        break;
+    default:
+        ui::Text("%s", curr_set_text.c_str());
+    }
+
+    if (is_default) {
+        ui::PopStyleVar(1);
+    }
+}
+
+void render_settings2_ui(Settings2* pSettings,
+    size_t* pLongestSettingPtr) {
+    bool calc_length = false;
+    if (pLongestSettingPtr && *pLongestSettingPtr == 0) {
+        calc_length = true;
+    }
+
+    int i = 0;
+    for (auto categ : *pSettings) {
+        //URHO3D_LOGINFO(categ.getName().c_str());
+
+        std::string cat_name = categ.getName();
+
+        if (!cat_name.size()) {
+            cat_name = "General";
+        }
+
+        if (ui::CollapsingHeader(cat_name.c_str())) {
+            for (auto& set : categ) {
+                render_setting2_ui(set.first, set.second, i);
+
+                if (calc_length) {
+                    if (set.first.size() > * pLongestSettingPtr) {
+                        *pLongestSettingPtr = set.first.size();
+                    }
+                }
+
+                ++i;
+            }
+        }
+    }
+}

@@ -149,14 +149,14 @@ public:
         _presets.clear();
         UrhoBits::loadTreePresetsList(context_, _presets);
 
-        auto sett = _cfg->tree_preset.getString();
+        auto sett = _cfg->tree_preset.getValue<V2::StringValue>();
         if (sett.size() == 0
             || findPreset(ea::string(sett.c_str())) == _presets.end()) {
             if (_presets.size()) {
-                _cfg->tree_preset.setString(_presets[0].c_str());
+                _cfg->tree_preset.setValue<V2::StringValue>(_presets[0].c_str());
             } else {
                 const char* unnamed = "unnamed.tree.ini";
-                _cfg->tree_preset.setString(unnamed);
+                _cfg->tree_preset.setValue<V2::StringValue>(unnamed);
                 _presets.push_back(ea::string(unnamed));
             }
         }
@@ -167,7 +167,7 @@ public:
         if (pSave) {
             _treeSettings.writeFile();
         }
-        _treeSettings.setFilename(_cfg->tree_preset.getString());
+        _treeSettings.setFilename(_cfg->tree_preset.getValue<V2::StringValue>());
         _treeSettings.resetAll();
         _treeSettings.load();
 
@@ -204,7 +204,7 @@ public:
     void buildTree () {
         reloadPresets();
         URHO3D_LOGINFO(ea::string("selected ") +
-                       _cfg->tree_preset.getString().c_str());
+                       _cfg->tree_preset.getValue<V2::StringValue>().c_str());
 
         doReloadTree();
     }
@@ -355,7 +355,7 @@ private:
         auto dest_len = static_cast<size_t>(IM_ARRAYSIZE(preset_name));
         std::string new_name;
 
-        const auto old_path = _cfg->tree_preset.getString();
+        const auto old_path = _cfg->tree_preset.getValue<V2::StringValue>();
         const auto old_name = old_path.substr(0, old_path.size() - 9);
 
         if (pForking) {
@@ -378,7 +378,7 @@ private:
             } else {
                 _presets.push_back(ea::string(preset_name) + ".tree.ini");
                 // TODO refactor and use "setPreset()" function
-                _cfg->tree_preset.setString(_presets.back().c_str());
+                _cfg->tree_preset.setValue<V2::StringValue>(_presets.back().c_str());
                 // for now we just write what we had, instead of asking save/no?
                 // should add some versioning mechanism for each tree tho...
                 if (_isForking) {
@@ -393,10 +393,10 @@ private:
                     }
                     std::filesystem::rename(
                         std::filesystem::path(old_path),
-                        std::filesystem::path(_cfg->tree_preset.getString()));
+                        std::filesystem::path(_cfg->tree_preset.getValue<V2::StringValue>()));
                 }
 
-                _treeSettings.setFilename(_cfg->tree_preset.getString());
+                _treeSettings.setFilename(_cfg->tree_preset.getValue<V2::StringValue>());
 
                 doReloadTree();
             }
@@ -408,13 +408,13 @@ private:
 
     void renderPresetUi () {
         static const char *curr_preset;
-        curr_preset = _cfg->tree_preset.getString().c_str();
+        curr_preset = _cfg->tree_preset.getValue<V2::StringValue>().c_str();
         if (ui::BeginCombo("Preset", curr_preset, 0)) {
             for (size_t i = 0; i < _presets.size(); ++i) {
                 const bool is_selected = (curr_preset == _presets[i]);
                 if (ui::Selectable(_presets[i].c_str(), is_selected)) {
-                    _cfg->tree_preset.setString(_presets[i].c_str());
-                    curr_preset = _cfg->tree_preset.getString().c_str();
+                    _cfg->tree_preset.setValue<V2::StringValue>(_presets[i].c_str());
+                    curr_preset = _cfg->tree_preset.getValue<V2::StringValue>().c_str();
                     _treeSettings.writeFile();
                     buildTree();
                 }
@@ -441,7 +441,7 @@ private:
                 URHO3D_LOGINFO(e.what());
             }
 
-            const auto old_path = _cfg->tree_preset.getString();
+            const auto old_path = _cfg->tree_preset.getValue<V2::StringValue>();
 
             std::filesystem::rename(
                 std::filesystem::path(old_path),
@@ -454,7 +454,7 @@ private:
                 if (switch_to > it) {
                     ea::advance(switch_to, -1);
                 }
-                _cfg->tree_preset.setString(switch_to->c_str());
+                _cfg->tree_preset.setValue<V2::StringValue>(switch_to->c_str());
                 doReloadTree(false);
             }
         }
@@ -482,7 +482,7 @@ private:
     }
 
     ea::string getCurrentPreset () {
-        return ea::string(_cfg->tree_preset.getString().c_str());
+        return ea::string(_cfg->tree_preset.getValue<V2::StringValue>().c_str());
     }
 
 
