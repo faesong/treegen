@@ -165,42 +165,42 @@ void render_setting2_ui(std::string pName,
     switch (set.getType()) {
     case SettingTypeEnum::BOOL:
         if (ui::Checkbox(pName.c_str(),
-            set.getUpdatePtr<V2::BoolValue>())) {
-            set.updateFromPtr();
+            set.getIncomingPtr<V2::BoolValue>())) {
+            set.setFromIncomingPtr<V2::BoolValue>();
         }
         break;
     case SettingTypeEnum::INT:
         if (ui::DragInt(pName.c_str(),
-                        set.getUpdatePtr<V2::IntValue>(),
+                        set.getIncomingPtr<V2::IntValue>(),
                         1, // TODO figure out proper speed
                         set.getConstraint<V2::IntValue>()._min,
                         set.getConstraint<V2::IntValue>()._max)) {
-            set.updateFromPtr();
+            set.setFromIncomingPtr<V2::IntValue>();
         }
         break;
     case SettingTypeEnum::FLOAT:
         if (ui::DragFloat(pName.c_str(),
-            set.getUpdatePtr<V2::FloatValue>(),
-            .01f, // TODO figure out proper speed
-            set.getConstraint<V2::FloatValue>()._min,
-            set.getConstraint<V2::FloatValue>()._max)) {
-            set.updateFromPtr();
+                          set.getIncomingPtr<V2::FloatValue>(),
+                          .01f, // TODO figure out proper speed
+                          set.getConstraint<V2::FloatValue>()._min,
+                          set.getConstraint<V2::FloatValue>()._max)) {
+            set.setFromIncomingPtr<V2::FloatValue>();
         }
         break;
     case SettingTypeEnum::VECTOR3:
         if (pName.find("_color") < pName.size()) {
             if (ui::ColorEdit3(pName.c_str(),
-                (float*)set.getUpdatePtr<Vector3Value>())) {
-                set.updateFromPtr();
+                (float*)set.getIncomingPtr<Vector3Value>())) {
+                set.setFromIncomingPtr<Vector3Value>();
             }
         }
         else {
             if (ui::DragFloat3(pName.c_str(),
-                (float*)set.getUpdatePtr<Vector3Value>(),
+                (float*)set.getIncomingPtr<Vector3Value>(),
                 .01f, // TODO figure out proper speed
                 set.getConstraint<Vector3Value>()._min.x_,
                 set.getConstraint<Vector3Value>()._max.x_)) {
-                set.updateFromPtr();
+                set.setFromIncomingPtr<Vector3Value>();
             }
         }
         break;

@@ -75,79 +75,58 @@ struct AppSettings {
         : _settings(pSettings),
           tree_preset(
               _settings
-              .appendSetting("_preset", V2::StringValue(""))
-              .setPtrToUpdate<V2::StringValue>(&tree_preset_str)),
+              .appendSetting("_preset", V2::StringValue(""))),
           fxaa(
               _settings
-              .appendSetting("fxaa", V2::BoolValue(true))
-              .setPtrToUpdate<V2::BoolValue>(&fxaa_bool)),
+              .appendSetting("fxaa", V2::BoolValue(true))),
           ssao(
               _settings
               .appendSetting(
                   "ssao",
-                  V2::FloatValue(.5f, V2::ArithmeticConstraint(0.f, 10.f)))
-              .setPtrToUpdate<V2::FloatValue>(&ssao_float)),
+                  V2::FloatValue(.5f, V2::ArithmeticConstraint(0.f, 10.f)))),
           vibrance(
               _settings
               .appendSetting(
                   "vibrance",
-                  V2::FloatValue(.5f, V2::ArithmeticConstraint(0.f, 10.f)))
-              .setPtrToUpdate<V2::FloatValue>(&vibrance_float)),
+                  V2::FloatValue(.5f, V2::ArithmeticConstraint(0.f, 10.f)))),
           shadow_intensity(
               _settings
               .appendSetting(
                   "shadow_intensity",
-                  V2::FloatValue(.1f, V2::ArithmeticConstraint(0.f, 1.f)))
-              .setPtrToUpdate<V2::FloatValue>(&shadow_intensity_float)),
+                  V2::FloatValue(.1f, V2::ArithmeticConstraint(0.f, 1.f)))),
           ambient(
               _settings
               .appendSetting(
                   "ambient_color",
                   Vector3Value(Urho3D::Vector3(0.5, 0.5, 0.5),
-                               v3_constraint_0_to_1))
-              .setPtrToUpdate<Vector3Value>(&ambient_vector3)),
+                               v3_constraint_0_to_1))),
           fog_color(
               _settings
               .appendSetting(
                   "fog_color",
                   Vector3Value(Urho3D::Vector3(0.5, 0.5, 0.5),
-                               v3_constraint_0_to_1))
-              .setPtrToUpdate<Vector3Value>(&fog_color_vector3)),
+                               v3_constraint_0_to_1))),
           light_direction(
               _settings
               .appendSetting(
                   "light_direction",
                   Vector3Value(Urho3D::Vector3(0.5, -0.5, 0.5),
-                               v3_constraint_1_to_1))
-              .setPtrToUpdate<Vector3Value>(&light_direction_vector3)),
+                               v3_constraint_1_to_1))),
           auto_exposure(
               _settings
-              .appendSetting("auto_exposure", V2::BoolValue(true))
-              .setPtrToUpdate<V2::BoolValue>(&auto_exposure_bool)) {
+              .appendSetting("auto_exposure", V2::BoolValue(true))) {
         _settings.load();
     }
 
     Settings2& _settings;
 
-    std::string tree_preset_str;
     Setting2& tree_preset;
-    float ssao_float;
     Setting2& ssao;
-    bool fxaa_bool;
     Setting2& fxaa;
-    float vibrance_float;
     Setting2& vibrance;
-    float shadow_intensity_float;
     Setting2& shadow_intensity;
-    bool auto_exposure_bool;
     Setting2& auto_exposure;
-
-    Urho3D::Vector3 ambient_vector3;
     Setting2& ambient;
-
-    Urho3D::Vector3 fog_color_vector3;
     Setting2& fog_color;
-
-    Urho3D::Vector3 light_direction_vector3;
     Setting2& light_direction;
 };

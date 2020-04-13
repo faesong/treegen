@@ -29,74 +29,73 @@ public:
           _cfg(_cfg_detail),
           _rootState(&_stateMgr, &_cfg),
           _treeEditState(pContext, &_stateMgr, &_inputMgr, &_cfg) {
-        _cfg.auto_exposure.addUpdateHandler(
-            this, std::bind(&TreeGen::onAutoExposureSettingUpdate, this));
-        _cfg.ssao.addUpdateHandler(
-            this, std::bind(&TreeGen::onSsaoSettingUpdate, this));
-        _cfg.vibrance.addUpdateHandler(
-            this, std::bind(&TreeGen::onVibranceSettingUpdate, this));
-        _cfg.fxaa.addUpdateHandler(
-            this, std::bind(&TreeGen::onFxaaSettingUpdate, this));
-        _cfg.ambient.addUpdateHandler(
-            this, std::bind(&TreeGen::onAmbientSettingUpdate, this));
-        _cfg.fog_color.addUpdateHandler(
-            this, std::bind(&TreeGen::onFogColorSettingUpdate, this));
-        _cfg.shadow_intensity.addUpdateHandler(
-            this, std::bind(&TreeGen::onShadowIntensitySettingUpdate, this));
-        _cfg.light_direction.addUpdateHandler(
-            this, std::bind(&TreeGen::onLightDirectionSettingUpdate, this));
+        using std::placeholders::_1;
+        _cfg.auto_exposure.addUpdateHandler<V2::BoolValue>(
+            this, std::bind(&TreeGen::onAutoExposureSettingUpdate, this, _1));
+        _cfg.ssao.addUpdateHandler<V2::FloatValue>(
+            this, std::bind(&TreeGen::onSsaoSettingUpdate, this, _1));
+        _cfg.vibrance.addUpdateHandler<V2::FloatValue>(
+            this, std::bind(&TreeGen::onVibranceSettingUpdate, this, _1));
+        _cfg.fxaa.addUpdateHandler<V2::BoolValue>(
+            this, std::bind(&TreeGen::onFxaaSettingUpdate, this, _1));
+        _cfg.ambient.addUpdateHandler<Vector3Value>(
+            this, std::bind(&TreeGen::onAmbientSettingUpdate, this, _1));
+        _cfg.fog_color.addUpdateHandler<Vector3Value>(
+            this, std::bind(&TreeGen::onFogColorSettingUpdate, this, _1));
+        _cfg.shadow_intensity.addUpdateHandler<V2::FloatValue>(
+            this, std::bind(&TreeGen::onShadowIntensitySettingUpdate, this, _1));
+        _cfg.light_direction.addUpdateHandler<Vector3Value>(
+            this, std::bind(&TreeGen::onLightDirectionSettingUpdate, this, _1));
     }
 
 
-    void onAmbientSettingUpdate () {
-        _zone->SetAmbientColor(Urho3D::Color(_cfg.ambient_vector3));
+    void onAmbientSettingUpdate (const Urho3D::Vector3 &pAmbient) {
+        _zone->SetAmbientColor(Urho3D::Color(pAmbient));
     }
 
-    void onLightDirectionSettingUpdate () {
-        _light->GetNode()->SetDirection(_cfg.light_direction_vector3);
+    void onLightDirectionSettingUpdate (const Urho3D::Vector3 &pLightDir) {
+        _light->GetNode()->SetDirection(pLightDir);
     }
 
-    void onFogColorSettingUpdate () {
-        _zone->SetFogColor(Urho3D::Color(_cfg.fog_color_vector3));
+    void onFogColorSettingUpdate (const Urho3D::Vector3 &pFogColor) {
+        _zone->SetFogColor(Urho3D::Color(pFogColor));
     }
 
-    void onShadowIntensitySettingUpdate () {
-        _light->SetShadowIntensity(_cfg.shadow_intensity_float);
+    void onShadowIntensitySettingUpdate (const float &pIntensity) {
+        _light->SetShadowIntensity(pIntensity);
     }
 
-    void onAutoExposureSettingUpdate () {
-        _renderPath->SetEnabled("AutoExposure", _cfg.auto_exposure.getValue<V2::BoolValue>());
+    void onAutoExposureSettingUpdate (const bool &pAutoExposure) {
+        _renderPath->SetEnabled("AutoExposure", pAutoExposure);
     }
 
-    void onFxaaSettingUpdate () {
-        _renderPath->SetEnabled("FXAA3", _cfg.fxaa.getValue<V2::BoolValue>());
+    void onFxaaSettingUpdate (const bool &pFxaa) {
+        _renderPath->SetEnabled("FXAA3", pFxaa);
     }
 
-    void onSsaoSettingUpdate () {
-        const float ssao = _cfg.ssao.getValue<V2::FloatValue>();
-        if (ssao > 0.f) {
+    void onSsaoSettingUpdate (const float pSsao) {
+        if (pSsao > 0.f) {
             _renderPath->SetEnabled("Ssao", true);
-            _renderPath->SetShaderParameter("SsaoStrength", ssao);
+            _renderPath->SetShaderParameter("SsaoStrength", pSsao);
         } else {
             _renderPath->SetEnabled("Ssao", false);
         }
     }
 
-    void onVibranceSettingUpdate () {
-        const float vibr = _cfg.vibrance.getValue<V2::FloatValue>();
-        if (vibr > 0.f) {
+    void onVibranceSettingUpdate (const float pVibrance) {
+        if (pVibrance > 0.f) {
             _renderPath->SetEnabled("Vibrance", true);
-            _renderPath->SetShaderParameter("VibranceStrength", vibr);
+            _renderPath->SetShaderParameter("VibranceStrength", pVibrance);
         } else {
             _renderPath->SetEnabled("Vibrance", false);
         }
     }
 
     void initPostProcessingSettings () {
-        onAutoExposureSettingUpdate();
-        onSsaoSettingUpdate();
-        onFxaaSettingUpdate();
-        onVibranceSettingUpdate();
+        _cfg_detail.triggerListeners<V2::BoolValue>("auto_exposure");
+        _cfg_detail.triggerListeners<V2::FloatValue>("ssao");
+        _cfg_detail.triggerListeners<V2::BoolValue>("fxaa");
+        _cfg_detail.triggerListeners<V2::FloatValue>("vibrance");
     }
 
     void setup () override {
@@ -130,12 +129,13 @@ public:
         _scene->CreateComponent<Urho3D::Octree>();
 
         Urho3D::Node* lightNode = _scene->CreateChild("DirectionalLight");
-        lightNode->SetDirection(_cfg.light_direction_vector3);
 
         _light = lightNode->CreateComponent<Urho3D::Light>();
         _light->SetLightType(Urho3D::LightType::LIGHT_DIRECTIONAL);
         _light->SetCastShadows(true);
-        _light->SetShadowIntensity(_cfg.shadow_intensity_float);
+
+        _cfg_detail.triggerListeners<V2::FloatValue>("shadow_intensity");
+        _cfg_detail.triggerListeners<Vector3Value>("light_direction");
 
 
         _cameraNode = _scene->CreateChild("Camera");
@@ -151,7 +151,8 @@ public:
         _zone = _scene->GetOrCreateComponent<Urho3D::Zone>();
 
         _zone->SetBoundingBox(Urho3D::BoundingBox(-100000, 100000));
-        _zone->SetFogColor(Urho3D::Color(_cfg.fog_color_vector3));
+        _cfg_detail.triggerListeners<Vector3Value>("fog_color");
+
         _zone->SetFogStart(20.f);
         _zone->SetFogEnd(1000.f);
 
@@ -161,7 +162,7 @@ public:
         // zone->SetFogStart(maxfloat);
         // zone->SetFogEnd(maxfloat);
 
-        _zone->SetAmbientColor(Urho3D::Color(_cfg.ambient_vector3));
+        _cfg_detail.triggerListeners<Vector3Value>("ambient_color");
 
         cache->SetAutoReloadResources(true);
 
