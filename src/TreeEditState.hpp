@@ -113,13 +113,13 @@ public:
 
         _tree.setConfig(_treeConfigCache.getTreeConfig());
 
-        auto it = _treeSettings.getSettingsIterator();
-        while (it.isElement()) {
-            it.getCurrent().addUpdateHandler(
-                this,
-                std::bind(&TreeEditState::treeSettingUpdated, this));
 
-            it.peekNext();
+        for (auto &categ : _treeSettings) {
+            for (auto &set : categ) {
+                set.second->addSimpleUpdateHandler(
+                    this,
+                    std::bind(&TreeEditState::treeSettingUpdated, this));
+            }
         }
     }
 
@@ -339,7 +339,7 @@ private:
                                      // assuming font is 2 to 1 (height to width):
                                      + ImGui::GetFontSize()/2.f 
                                      * -(float(_longestSettingLength) * 1.05f));
-                render_settings_ui (&_treeSettings, &_longestSettingLength);
+                render_settings2_ui (&_treeSettings, &_longestSettingLength);
                 ImGui::PopItemWidth();
             }
         }
@@ -539,7 +539,7 @@ private:
 
     AppSettings *_cfg = nullptr; // TODO move
 
-    VcppBits::Settings _treeSettings;
+    Settings2 _treeSettings;
     TreeConfigCache _treeConfigCache;
 
     ea::vector<ea::string> _presets;
