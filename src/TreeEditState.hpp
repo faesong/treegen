@@ -200,7 +200,6 @@ public:
         if (!_tree.isInitialized()) {
             _tree.init(_scene, true);
         } else {
-            for (int i = 0; i < 1000; ++ i)
             _tree.regenerate();
         }
 
