@@ -116,10 +116,33 @@ public:
 
         for (auto &categ : _treeSettings) {
             for (auto &set : categ) {
-                set.second->addSimpleUpdateHandler(
-                    this,
-                    std::bind(&TreeEditState::treeSettingUpdated, this));
+                if (set.first == "material.leaf_texture_name") {
+                    using std::placeholders::_1;
+                    set.second->addUpdateHandler<StringValue>(
+                        this,
+                        std::bind(&TreeEditState::treeLeafTextureSettingUpdated,
+                                  this,
+                                  _1));
+                } else {
+                    set.second->addSimpleUpdateHandler(
+                        this,
+                        std::bind(&TreeEditState::treeSettingUpdated, this));
+                }
             }
+        }
+    }
+
+    void treeLeafTextureSettingUpdated (const std::string &pNewTextureName) {
+        const ea::string THEFUCK = ea::string("Tree/") + ea::string(pNewTextureName.c_str());
+        std::string omfg(THEFUCK.c_str());
+
+        auto cache = GetSubsystem<Urho3D::ResourceCache>();
+        auto mat = cache->GetResource<Urho3D::Material>("Tree/Leaf.xml");
+        std::string curr = mat->GetTexture(Urho3D::TU_DIFFUSE)->GetName().c_str();
+        if (cache->GetResource<Urho3D::Texture2D>(THEFUCK)) {
+            ;
+            mat->SetTexture(Urho3D::TU_DIFFUSE,
+                            cache->GetResource<Urho3D::Texture2D>(THEFUCK));
         }
     }
 

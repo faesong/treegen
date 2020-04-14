@@ -140,9 +140,51 @@ void render_settings_ui (VcppBits::Settings * pSettings,
     }
 }
 
+struct StdInputTextCallback_UserData
+{
+    std::string*            Str;
+    ImGuiInputTextCallback  ChainCallback;
+    void*                   ChainCallbackUserData;
+};
+
+static int StdInputTextCallback (ImGuiInputTextCallbackData* data)
+{
+    StdInputTextCallback_UserData* user_data = (StdInputTextCallback_UserData*)data->UserData;
+    if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+    {
+        // Resize string callback
+        // If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
+        std::string* str = user_data->Str;
+        IM_ASSERT(data->Buf == str->c_str());
+        str->resize(data->BufTextLen, '+');
+        data->Buf = (char*)str->c_str();
+    }
+    else if (user_data->ChainCallback)
+    {
+        // Forward to user callback, if any
+        data->UserData = user_data->ChainCallbackUserData;
+        return user_data->ChainCallback(data);
+    }
+    return 0;
+}
+
+inline bool StdInputText(const char* label, std::string* str, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data)
+{
+    IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+    flags |= ImGuiInputTextFlags_CallbackResize;
+
+    StdInputTextCallback_UserData cb_user_data;
+    cb_user_data.Str = str;
+    cb_user_data.ChainCallback = callback;
+    cb_user_data.ChainCallbackUserData = user_data;
+    return ui::InputText(label, (char*)str->c_str(), str->capacity() + 1, flags, StdInputTextCallback, &cb_user_data);
+}
+
+
+
 void render_setting2_ui(std::string pName,
-    Setting2* pSetting,
-    int x_id) {
+                        Setting2* pSetting,
+                        int x_id) {
     auto& set = *pSetting; // todo shortcut/refactor
 
     ui::PushID(x_id);
@@ -204,6 +246,21 @@ void render_setting2_ui(std::string pName,
             }
         }
         break;
+    case SettingTypeEnum::STRING:
+    {
+        auto *ptr = set.getIncomingPtr<V2::StringValue>();
+        StdInputText(pName.c_str(),
+            ptr,
+            0,
+            nullptr,
+            nullptr);
+        if (ui::IsItemDeactivated()) {
+            // what the actual fuck? 
+            *ptr = ptr->c_str();
+            set.setFromIncomingPtr<V2::StringValue>();
+        }
+        break;
+    }
     default:
         ui::Text("%s", curr_set_text.c_str());
     }
@@ -221,7 +278,7 @@ void render_settings2_ui(Settings2* pSettings,
     }
 
     int i = 0;
-    for (auto categ : *pSettings) {
+    for (auto &categ : *pSettings) {
         //URHO3D_LOGINFO(categ.getName().c_str());
 
         std::string cat_name = categ.getName();
