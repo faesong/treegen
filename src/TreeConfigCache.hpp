@@ -83,6 +83,10 @@ struct TreeConfigCache {
                      &_ch.levels[i].deviation_k);
                 _add<FloatValue>(_cfg, is + ".direction_parent", -1.f, 1.f, 0.3f,
                      &_ch.levels[i].parent_k);
+                _add<FloatValue>(_cfg, is + ".direction_crown_outward", 0.f, 1.f, 0.1f,
+                                 &_ch.levels[i].crown_outward_k);
+                _add<FloatValue>(_cfg, is + ".crown_pos_offset", -.5f, .5f, -.2f,
+                                 &_ch.levels[i].crownpos_offset);
             }
 
             // we can have upto this many levels of leaves
