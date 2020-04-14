@@ -97,19 +97,31 @@ struct TreeConfigCache {
                      &_ch.leaves[i].lf_endpoint_random_k);
                 _add<FloatValue>(_cfg, il + ".direction_parent", -1.f, 1.f, 0.5f,
                      &_ch.leaves[i].lf_endpoint_parent_k);
+
+                _add<FloatValue>(_cfg, il + ".normal_parent", 0.001f, 1.f, 1.f,
+                                 &_ch.leaves[i].lf_normal_parent_k);
+                _add<FloatValue>(_cfg, il + ".normal_outward", 0.001f, 1.f, 0.001f,
+                                 &_ch.leaves[i].lf_normal_outward_k);
             }
         }
 
-        _addUnconstrained<EastringValue>(_cfg,
-                                         "material.leaf_texture_name",
-                                         "leaf_default_3x3.dds",
-                                         &leafTextureName);
+        _addUnconstrained<V2::StringValue>(_cfg,
+                                           "material.leaf_texture_name",
+                                           "leaf_default.png",
+                                           &leafTextureName);
 
         _add<IntValue>(_cfg, "material.leaves_atlas_res_x", 1, 100, 3,
                        &_ch.leaves_atlas_res_x);
         _add<IntValue>(_cfg, "material.leaves_atlas_res_y", 1, 100, 3,
                        &_ch.leaves_atlas_res_y);
 
+        _addEnum<V2::EnumStringValue>(
+            _cfg,
+            "material.leaves_shape",
+            { "diamond", "square" },
+            "diamond",
+            &leaves_shape,
+            (int*) &_ch.leaves_shape);
 
         _cfg.load();
     }
@@ -118,7 +130,9 @@ struct TreeConfigCache {
         return &_ch;
     }
 
-    ea::string leafTextureName;
+    std::string leafTextureName;
+
+    std::string leaves_shape;
 
 private:
     template <typename T>
@@ -136,6 +150,25 @@ private:
                 *pValueToKeepUpdated = pNewVal;
             });
         *pValueToKeepUpdated = pDefault;
+    }
+
+    template <typename T>
+    void _addEnum (Settings2& pSettings,
+                   const std::string& pSettingName,
+                   const std::vector<typename T::value_type> pValues,
+                   const typename T::value_type pDefault,
+                   typename T::value_type* pValueToKeepUpdated,
+                   int* pIntValueToKeepUpdated) {
+        auto &set = pSettings.appendSetting(
+            pSettingName, T(pDefault, EnumConstraint(pValues)));
+        set.addUpdateHandler<T>(
+            this,
+            [pValueToKeepUpdated, &set, pIntValueToKeepUpdated] (const typename T::value_type& pNewVal) {
+                *pValueToKeepUpdated = pNewVal;
+                *pIntValueToKeepUpdated = set.getEnumPos<T>();
+            });
+        *pValueToKeepUpdated = pDefault;
+        *pIntValueToKeepUpdated = set.getEnumPos<T>();
     }
 
     template <typename T>

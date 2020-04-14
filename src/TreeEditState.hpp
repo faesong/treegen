@@ -118,7 +118,7 @@ public:
             for (auto &set : categ) {
                 if (set.first == "material.leaf_texture_name") {
                     using std::placeholders::_1;
-                    set.second->addUpdateHandler<EastringValue>(
+                    set.second->addUpdateHandler<V2::StringValue>(
                         this,
                         std::bind(&TreeEditState::treeLeafTextureSettingUpdated,
                                   this,
@@ -132,7 +132,7 @@ public:
         }
     }
 
-    void treeLeafTextureSettingUpdated (const ea::string &pNewTextureName) {
+    void treeLeafTextureSettingUpdated (const std::string &pNewTextureName) {
         const ea::string new_path =
             ea::string("Tree/") + ea::string(pNewTextureName.c_str());
         auto cache = GetSubsystem<Urho3D::ResourceCache>();

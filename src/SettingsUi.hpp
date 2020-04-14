@@ -257,25 +257,29 @@ void render_setting2_ui(std::string pName,
             nullptr,
             nullptr);
         if (ui::IsItemDeactivated()) {
-            // what the actual fuck? 
+            // what the actual fuck?
             *ptr = ptr->c_str();
             set.setFromIncomingPtr<V2::StringValue>();
         }
         break;
     }
-    case SettingTypeEnum::EASTRING:
-        {
-            auto *ptr = set.getIncomingPtr<EastringValue>();
-            ui::InputText(pName.c_str(),
-                      ptr,
-                      0,
-                      nullptr,
-                      nullptr);
-            if (ui::IsItemDeactivated()) {
-                set.setFromIncomingPtr<EastringValue>();
+    case SettingTypeEnum::ENUM_STRING: {
+        //const std::string& curr = set
+        const auto &vals = set.getEnumElements<V2::EnumStringValue>();
+        const auto &curr_val = set.get<V2::EnumStringValue>();
+        if (ImGui::BeginCombo("combo 1", curr_val.c_str(), 0)) {
+            for (const auto &el : vals) {
+                bool is_selected = (curr_val == el);
+                if (ImGui::Selectable(el.c_str(), is_selected)) {
+                    set.set<V2::EnumStringValue>(el);
+                }
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
             }
-            break;
+            ImGui::EndCombo();
         }
+        break;
+    }
     default:
         ui::Text("%s", curr_set_text.c_str());
     }
