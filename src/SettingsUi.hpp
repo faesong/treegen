@@ -267,7 +267,7 @@ void render_setting2_ui(std::string pName,
         //const std::string& curr = set
         const auto &vals = set.getEnumElements<V2::EnumStringValue>();
         const auto &curr_val = set.get<V2::EnumStringValue>();
-        if (ImGui::BeginCombo("combo 1", curr_val.c_str(), 0)) {
+        if (ImGui::BeginCombo(pName.c_str(), curr_val.c_str(), 0)) {
             for (const auto &el : vals) {
                 bool is_selected = (curr_val == el);
                 if (ImGui::Selectable(el.c_str(), is_selected)) {
