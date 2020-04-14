@@ -2,6 +2,14 @@
 
 #include <VcppBits/Settings2/Settings2.hpp>
 
+inline std::string eastring_to_string (const ea::string pStr) {
+    return std::string(pStr.c_str());
+}
+
+inline ea::string eastring_from_string (const std::string &pStr) {
+    return ea::string(pStr.c_str());
+}
+
 inline std::string vector3_to_string (const Urho3D::Vector3 pVector3) {
     std::stringstream ss;
     ss << std::fixed;
@@ -43,6 +51,12 @@ using Vector3Value =
                            vector3_to_string,
                            vector3_from_string>;
 
+using EastringValue =
+          V2::SettingValue<ea::string,
+                           V2::NoneConstraint,
+                           eastring_to_string,
+                           eastring_from_string>;
+
 enum class SettingTypeEnum : std::size_t { BOOL,
                                            INT,
                                            FLOAT,
@@ -50,7 +64,8 @@ enum class SettingTypeEnum : std::size_t { BOOL,
                                            ENUM_FLOAT,
                                            STRING,
                                            ENUM_STRING,
-                                           VECTOR3 };
+                                           VECTOR3,
+                                           EASTRING};
 
 using Setting2 = V2::SettingImpl<SettingTypeEnum,
                                  V2::BoolValue,
@@ -60,6 +75,7 @@ using Setting2 = V2::SettingImpl<SettingTypeEnum,
                                  V2::EnumFloatValue,
                                  V2::StringValue,
                                  V2::EnumStringValue,
-                                 Vector3Value>;
+                                 Vector3Value,
+                                 EastringValue>;
 
 using Settings2 = V2::SettingsImpl<Setting2>;

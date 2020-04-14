@@ -118,7 +118,7 @@ public:
             for (auto &set : categ) {
                 if (set.first == "material.leaf_texture_name") {
                     using std::placeholders::_1;
-                    set.second->addUpdateHandler<StringValue>(
+                    set.second->addUpdateHandler<EastringValue>(
                         this,
                         std::bind(&TreeEditState::treeLeafTextureSettingUpdated,
                                   this,
@@ -132,17 +132,14 @@ public:
         }
     }
 
-    void treeLeafTextureSettingUpdated (const std::string &pNewTextureName) {
-        const ea::string THEFUCK = ea::string("Tree/") + ea::string(pNewTextureName.c_str());
-        std::string omfg(THEFUCK.c_str());
-
+    void treeLeafTextureSettingUpdated (const ea::string &pNewTextureName) {
+        const ea::string new_path =
+            ea::string("Tree/") + ea::string(pNewTextureName.c_str());
         auto cache = GetSubsystem<Urho3D::ResourceCache>();
         auto mat = cache->GetResource<Urho3D::Material>("Tree/Leaf.xml");
-        std::string curr = mat->GetTexture(Urho3D::TU_DIFFUSE)->GetName().c_str();
-        if (cache->GetResource<Urho3D::Texture2D>(THEFUCK)) {
-            ;
+        if (cache->GetResource<Urho3D::Texture2D>(new_path)) {
             mat->SetTexture(Urho3D::TU_DIFFUSE,
-                            cache->GetResource<Urho3D::Texture2D>(THEFUCK));
+                            cache->GetResource<Urho3D::Texture2D>(new_path));
         }
     }
 
@@ -203,6 +200,7 @@ public:
         if (!_tree.isInitialized()) {
             _tree.init(_scene, true);
         } else {
+            for (int i = 0; i < 1000; ++ i)
             _tree.regenerate();
         }
 

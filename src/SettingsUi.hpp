@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ImGui/imgui_stdlib.h>
+
 void clampSetting (VcppBits::Setting& pSetting) {
     Urho3D::Timer tm;
     switch (pSetting.getType()) {
@@ -261,6 +263,19 @@ void render_setting2_ui(std::string pName,
         }
         break;
     }
+    case SettingTypeEnum::EASTRING:
+        {
+            auto *ptr = set.getIncomingPtr<EastringValue>();
+            ui::InputText(pName.c_str(),
+                      ptr,
+                      0,
+                      nullptr,
+                      nullptr);
+            if (ui::IsItemDeactivated()) {
+                set.setFromIncomingPtr<EastringValue>();
+            }
+            break;
+        }
     default:
         ui::Text("%s", curr_set_text.c_str());
     }

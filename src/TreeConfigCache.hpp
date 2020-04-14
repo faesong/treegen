@@ -100,10 +100,10 @@ struct TreeConfigCache {
             }
         }
 
-        _addUnconstrained<StringValue>(_cfg,
-                                       "material.leaf_texture_name",
-                                       "leaf_default_3x3.dds",
-                                       &leafTextureName);
+        _addUnconstrained<EastringValue>(_cfg,
+                                         "material.leaf_texture_name",
+                                         "leaf_default_3x3.dds",
+                                         &leafTextureName);
 
         _add<IntValue>(_cfg, "material.leaves_atlas_res_x", 1, 100, 3,
                        &_ch.leaves_atlas_res_x);
@@ -118,7 +118,7 @@ struct TreeConfigCache {
         return &_ch;
     }
 
-    std::string leafTextureName;
+    ea::string leafTextureName;
 
 private:
     template <typename T>
