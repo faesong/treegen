@@ -57,6 +57,11 @@ struct TreeConfigCache {
                  &_ch.levels[i].endpoint_outward_k);
             _add<FloatValue>(_cfg, is + ".endpoint_direction_Zward", -1.f, 1.f, 0.4f,
                  &_ch.levels[i].endpoint_Zward_k);
+            _add<FloatValue>(_cfg, is + ".endpoint_direction_crown_outward", 0.f, 1.f, 0.2f,
+                             &_ch.levels[i].endpoint_crown_outward_k);
+            _add<FloatValue>(_cfg, is + ".endpoint_direction_parent", 0.f, 1.f, 0.2f,
+                             &_ch.levels[i].endpoint_parent_k);
+
             _add<FloatValue>(_cfg, is + ".endpoint_influence", 0.f, 10.f, 0.4f,
                  &_ch.levels[i].endpoint_influence);
 
