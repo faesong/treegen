@@ -1,2 +1,0 @@
-* doesn't save/load/change settings without provided tree preset
-that is until you manually create atleast one preset with *.tree.ini name
