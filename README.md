@@ -39,7 +39,7 @@ I try to order the list by the severety level, yet it's not entirely strict.
 * There are certain features that make many tree types impossible to make
 * There is no automation for Level-Of-Detail (lower-poly version), and neither
   any useful metadata (like vertex groups or tree skeleton, ..) exported to aid
-  in making manual LOD creation
+  in making manual lower-polycound LODs
 * Using this as a library ( https://gitlab.com/fiasco/rbfxbits ) is only viable
   from rbfx game engine really. It is not really hard to generalize the code to
   use any kind of 3D engine.
