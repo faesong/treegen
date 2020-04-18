@@ -9,8 +9,11 @@ made and look quite realistic.
 
 You can use this program to make yourself some trees for 3D renders (too many
 polygons for games as of now), or you can incorporate it into your own
-game/program for tree generation -- provided that you are alright that making
+game/program for tree generation -- provided that it is fine for you that making
 somewhat-realistic trees with this requires atleast 30k polygons per tree.
+
+(The "Export" button should export to GLTF format if not specified otherwise)
+
 
 ![Blender screenshot](https://gitlab.com/fiasco/treegen/-/wikis/uploads/b6dfd37762150525b09a1425f5e7b125/Treegen1.png "Treegen in action")
 
