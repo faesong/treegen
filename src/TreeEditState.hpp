@@ -320,28 +320,6 @@ private:
                 exportUrhoModel();
             }
 
-            if (messageBox_) {
-                if (ui::Button("Close message box")) {
-                    messageBox_ = nullptr;
-                }
-            }
-            else {
-                if (ui::Button("Show message box")) {
-                    messageBox_ =
-                        new Urho3D::SystemMessageBox(context_,
-                                                     "Hello from SystemUI",
-                                                     "Sample Message Box");
-                    SubscribeToEvent(
-                        Urho3D::E_MESSAGEACK,
-                        [&](Urho3D::StringHash, Urho3D::VariantMap&) {
-                            messageBox_ = nullptr;
-                        });
-                }
-            }
-
-            if (ui::Button("Toggle console")) {
-                //GetSubsystem<Console>()->Toggle();
-            }
             if (ui::Button("Toggle demo window"))
                 demo_open ^= true;
 
@@ -543,8 +521,6 @@ private:
     }
 
     bool _pauseUpdates = false;
-
-    Urho3D::SharedPtr<Urho3D::SystemMessageBox> messageBox_;
 
     VcppBits::StateManager *_stateMgr;
     UrhoBits::InputManager *_inputMgr;
