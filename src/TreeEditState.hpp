@@ -296,14 +296,6 @@ private:
         fx::gltf::Save(exp, "export" + getTimestamp() + ".glb", true);
     }
 
-    void exportUrhoModel () {
-        auto models = _tree.getModels();
-        const auto ts = getTimestamp();
-        models.first->SaveFile(ea::string("trunc-") + ts.c_str() + ".mdl");
-        models.second->SaveFile(ea::string("leaves-") + ts.c_str() + ".mdl");
-    }
-
-
     void renderUi () {
         static bool demo_open = false;
         ui::SetNextWindowSize(ImVec2(200, 200),
@@ -314,9 +306,6 @@ private:
         if (ui::Begin("Tree", 0, 0)) {
             if (ui::Button("Export")) {
                 exportModel();
-            }
-            if (ui::Button("ExportUrho")) {
-                exportUrhoModel();
             }
 
             if (ui::Button("Toggle demo window"))
