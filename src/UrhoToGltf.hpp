@@ -15,8 +15,10 @@ fx::gltf::Primitive appendPrimitiveToGltfDocument (
     const uint32_t index_data_size =
         index_count * pIndexBuffer->GetIndexSize();
 
+    fx::gltf::Primitive primitive;
+
     if (vertex_count == 0) {
-        throw;
+        return primitive; // TODO handle properly?
     }
 
     // TODO3: only 1 buffer supported for now
@@ -70,8 +72,6 @@ fx::gltf::Primitive appendPrimitiveToGltfDocument (
 
     const uint32_t view1_pos = static_cast<uint32_t>(pDocument.bufferViews.size());
     pDocument.bufferViews.push_back(view1);
-
-    fx::gltf::Primitive primitive;
 
     auto vert_elements = pVertexBuffer->GetElements();
     for (size_t el_i = 0; el_i < vert_elements.size(); ++el_i) {
