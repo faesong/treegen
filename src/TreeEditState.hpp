@@ -293,7 +293,6 @@ private:
         appendModelToGltfDocument(exp, models.first);
         appendModelToGltfDocument(exp, models.second);
 
-
         fx::gltf::Save(exp, "export" + getTimestamp() + ".glb", true);
     }
 
