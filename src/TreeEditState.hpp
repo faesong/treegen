@@ -308,8 +308,6 @@ private:
                 exportModel();
             }
 
-            if (ui::Button("Toggle demo window"))
-                demo_open ^= true;
 
             if (_isForking) {
                 renderForkingRenamingUi(true);
