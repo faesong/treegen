@@ -2,6 +2,8 @@
 
 #include <VcppBits/Settings2/Settings2.hpp>
 
+
+//TODO migrate onto using UrhoBits/SettingsTypes
 inline std::string vector3_to_string (const Urho3D::Vector3 pVector3) {
     std::stringstream ss;
     ss << std::fixed;

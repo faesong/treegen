@@ -142,6 +142,7 @@ void render_settings_ui (VcppBits::Settings * pSettings,
     }
 }
 
+// TODO switch to UrhoBits/SettingsUi
 struct StdInputTextCallback_UserData
 {
     std::string*            Str;
@@ -183,7 +184,7 @@ inline bool StdInputText(const char* label, std::string* str, ImGuiInputTextFlag
 }
 
 
-
+// TODO switch to UrhoBits/SettingsUi
 void render_setting2_ui(std::string pName,
                         Setting2* pSetting,
                         int x_id) {
