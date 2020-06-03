@@ -239,8 +239,6 @@ public:
         buildTree();
         loadStaticModel(_cameraNode->GetScene(), "Misc/Plane.mdl")
             ->SetScale(Urho3D::Vector3(30, 30, 30));
-
-        _cameraNode->LookAt(_tree.getTruncBoundingBox().Center());
     }
     void resume () override {
         loadActions();
@@ -478,6 +476,7 @@ private:
 
     void onModelUpdated () {
         updateModelStats();
+        _cameraNode->LookAt(_tree.getTruncBoundingBox().Center());
         _camCtl.setPointOfInterest(_tree.getTruncBoundingBox().Center());
     }
 
