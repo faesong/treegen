@@ -95,6 +95,7 @@ if (HAS_MKLINK)
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/Data ${CMAKE_BINARY_DIR}/Data)
 
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/CoreData ${CMAKE_BINARY_DIR}/CoreData)
+  execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${RBFX_PATH}/bin/${CMAKE_BUILD_TYPE}/Urho3D.dll ${CMAKE_BINARY_DIR}/Urho3D.dll)
 else ()
   message(WARNING "MKLINK is not working properly, copy/link data yourself")
 endif()
