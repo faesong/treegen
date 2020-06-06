@@ -114,7 +114,7 @@ public:
         _tree.setConfig(_treeConfigCache.getTreeConfig());
 
 
-        for (auto &categ : _treeSettings) {
+        for (auto categ : _treeSettings) {
             for (auto &set : categ) {
                 if (set.first == "material.leaf_texture_name") {
                     using std::placeholders::_1;

@@ -298,7 +298,7 @@ void render_settings2_ui(Settings2* pSettings,
     }
 
     int i = 0;
-    for (auto &categ : *pSettings) {
+    for (auto categ : *pSettings) {
         //URHO3D_LOGINFO(categ.getName().c_str());
 
         std::string cat_name = categ.getName();
