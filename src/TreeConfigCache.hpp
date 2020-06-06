@@ -15,7 +15,7 @@ struct TreeConfigCache {
         createArithmetic<FloatValue>(_cfg,
                          "branch_curvature_threshold",
                          0.f,
-                         20.f,
+                         100.f,
                          5.f,
                          &_ch.branch_curvature_threshold);
         createArithmetic<FloatValue>(_cfg, "root_length", 0.1f, 200.f, 8.f, &_ch.root_length);
