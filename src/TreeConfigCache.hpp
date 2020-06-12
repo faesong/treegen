@@ -34,7 +34,7 @@ struct TreeConfigCache {
              &_ch.leaves_offset);
 
 
-        for (int i = 0; i < 6; ++i) {
+        for (size_t i = 0; i < 6; ++i) {
             const auto is = std::to_string(i);
             createArithmetic<FloatValue>(_cfg, is + ".acacia", 0.f, 1.f, 0.f,
                  &_ch.levels[i].acacia);
@@ -133,6 +133,14 @@ struct TreeConfigCache {
             &leaves_shape,
             (int*) &_ch.leaves_shape);
 
+        createEnum<V2::EnumStringValue>(
+            _cfg,
+            "smoothing_algorithm",
+            { "fast", "precise" },
+            "fast",
+            &smoothing_algorithm,
+            (int*) &_ch.smoothing_algorithm);
+
         _cfg.load();
     }
 
@@ -143,6 +151,7 @@ struct TreeConfigCache {
     std::string leafTextureName;
 
     std::string leaves_shape;
+    std::string smoothing_algorithm;
 
 private:
     UrhoBits::TreeConfig _ch;
