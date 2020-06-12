@@ -14,14 +14,14 @@ struct AppSettings {
           tree_preset(
               _settings
               .appendSetting("_preset", V2::StringValue(""))),
-          fxaa(
-              _settings
-              .appendSetting("fxaa", V2::BoolValue(true))),
           ssao(
               _settings
               .appendSetting(
                   "ssao",
                   V2::FloatValue(.5f, V2::ArithmeticConstraint(0.f, 10.f)))),
+          fxaa(
+              _settings
+              .appendSetting("fxaa", V2::BoolValue(true))),
           vibrance(
               _settings
               .appendSetting(
@@ -32,6 +32,9 @@ struct AppSettings {
               .appendSetting(
                   "shadow_intensity",
                   V2::FloatValue(.1f, V2::ArithmeticConstraint(0.f, 1.f)))),
+          auto_exposure(
+              _settings
+              .appendSetting("auto_exposure", V2::BoolValue(true))),
           ambient(
               _settings
               .appendSetting(
@@ -49,10 +52,8 @@ struct AppSettings {
               .appendSetting(
                   "light_direction",
                   Vector3Value(Urho3D::Vector3(0.5, -0.5, 0.5),
-                               v3_constraint_1_to_1))),
-          auto_exposure(
-              _settings
-              .appendSetting("auto_exposure", V2::BoolValue(true))) {
+                               v3_constraint_1_to_1)))
+ {
         _settings.load();
     }
 
