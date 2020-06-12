@@ -137,7 +137,7 @@ fx::gltf::Primitive appendPrimitiveToGltfDocument (
     accessor_indices.max = { float(vertex_count - 1) };
     accessor_indices.min = { 0 };
 
-    primitive.indices = static_cast<uint32_t>(pDocument.accessors.size());
+    primitive.indices = static_cast<int32_t>(pDocument.accessors.size());
     pDocument.accessors.push_back(accessor_indices);
 
     return primitive;
@@ -191,6 +191,6 @@ void appendModelToGltfDocument (fx::gltf::Document &pDocument,
     pDocument.meshes.push_back(mesh);
 
     fx::gltf::Node node;
-    node.mesh = static_cast<uint32_t>(pDocument.meshes.size()) - 1;
+    node.mesh = static_cast<int32_t>(pDocument.meshes.size()) - 1;
     pDocument.nodes.push_back(node);
 }
