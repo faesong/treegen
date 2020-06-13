@@ -19,6 +19,8 @@
 #include "AppSettings.hpp"
 #include "RootState.hpp"
 
+#include "TreeGenSettings.hpp"
+
 
 class TreeGen : public UrhoBits::UrhoAppFramework {
     URHO3D_OBJECT(TreeGen, UrhoAppFramework);

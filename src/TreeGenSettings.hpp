@@ -2,6 +2,8 @@
 
 #include <VcppBits/Settings2/Settings2.hpp>
 
+#include <Urho3D/Math/Vector3.h>
+
 
 //TODO migrate onto using UrhoBits/SettingsTypes
 inline std::string vector3_to_string (const Urho3D::Vector3 pVector3) {
@@ -28,14 +30,14 @@ inline Urho3D::Vector3 vector3_from_string (const std::string &pStr) {
 }
 
 namespace Urho3D {
-    bool operator>= (const Vector3 &pLeft, const Vector3 pRight) {
-        return pLeft.x_ >= pRight.x_
-            && pLeft.y_ >= pRight.y_
-            && pLeft.z_ >= pRight.z_;
-    }
-    bool operator<= (const Vector3 &pLeft, const Vector3 pRight) {
-        return pRight >= pLeft;
-    }
+inline bool operator>= (const Vector3 &pLeft, const Vector3 pRight) {
+    return pLeft.x_ >= pRight.x_
+        && pLeft.y_ >= pRight.y_
+        && pLeft.z_ >= pRight.z_;
+}
+inline bool operator<= (const Vector3 &pLeft, const Vector3 pRight) {
+    return pRight >= pLeft;
+}
 
 } // namespace Urho3D
 

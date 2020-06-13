@@ -35,6 +35,10 @@ endif()
 
 add_executable(treegen WIN32
   src/main.cpp
+  src/AppSettings.cpp
+  src/TreeEditState.cpp
+  src/UrhoToGltf.cpp
+  src/SettingsUi.cpp
   )
 
 target_link_libraries(treegen Urho3D)
@@ -87,6 +91,19 @@ if (CMAKE_HOST_WIN32)
   endif ()
 endif ()
 
+set(RBFX_BUILD_TYPE "Release")
+if (NOT DEFINED RBFX_SUBDIR)
+  get_filename_component(RBFX_FOLDER_NAME ${RBFX_PATH} NAME)
+  message("FOLDER NAME ${RBFX_FOLDER_NAME}")
+  set(RBFX_DEBUG_BUILD_TYPE_FOUND)
+  string(FIND "${RBFX_FOLDER_NAME}" "Debug" RBFX_DEBUG_BUILD_TYPE_POS)
+  if (NOT ${RBFX_DEBUG_BUILD_TYPE_POS} EQUAL -1)
+    set(RBFX_BUILD_TYPE "Debug")
+  endif()
+endif()
+message("RBFX_BUILD_TYPE is ${RBFX_BUILD_TYPE}")
+
+
 
 if (HAS_MKLINK)
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/Data ${CMAKE_BINARY_DIR}/Data)
@@ -94,10 +111,11 @@ if (HAS_MKLINK)
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/CoreData ${CMAKE_BINARY_DIR}/CoreData)
 
   message("BUILD TYPE IS ${CMAKE_BUILD_TYPE}")
+  message("CONFIGURATION_TYPE IS ${CMAKE_CONFIGURATION_TYPE}")
   if (DEFINED RBFX_SUBDIR)
     execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/bin/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll ${CMAKE_BINARY_DIR}/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll)
   else ()
-    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${RBFX_PATH}/bin/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll ${CMAKE_BINARY_DIR}/Urho3D.dll)
+    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${RBFX_PATH}/bin/${RBFX_BUILD_TYPE}/Urho3D.dll ${CMAKE_BINARY_DIR}/Urho3D.dll)
   endif()
 else ()
   message(WARNING "MKLINK is not working properly, copy/link data yourself")

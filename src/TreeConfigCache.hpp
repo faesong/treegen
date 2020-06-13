@@ -136,7 +136,7 @@ struct TreeConfigCache {
         createEnum<V2::EnumStringValue>(
             _cfg,
             "smoothing_algorithm",
-            { "fast", "precise" },
+            { "fast", "precise", "experimental" },
             "fast",
             &smoothing_algorithm,
             (int*) &_ch.smoothing_algorithm);
