@@ -6,6 +6,14 @@ project (treegen)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")
+
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC URHOTREEGEN_GIT_SHA1)
+string(SUBSTRING ${URHOTREEGEN_GIT_SHA1} 0 10 URHOTREEGEN_VERSION_GIT_REVISION)
+
+
 if (UNIX)
   set(ADDITIONAL_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wno-switch -Wuninitialized  -Wshadow -Wredundant-decls -Wdisabled-optimization -Wnoexcept -Wsign-compare -Wsign-conversion -Wstrict-aliasing")
 endif ()
@@ -113,10 +121,59 @@ if (HAS_MKLINK)
   message("BUILD TYPE IS ${CMAKE_BUILD_TYPE}")
   message("CONFIGURATION_TYPE IS ${CMAKE_CONFIGURATION_TYPE}")
   if (DEFINED RBFX_SUBDIR)
-    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/bin/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll ${CMAKE_BINARY_DIR}/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll)
+    set(URHO3D_DLL_LOCATION "${CMAKE_BINARY_DIR}/bin/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll")
+    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink  ${CMAKE_BINARY_DIR}/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll)
   else ()
+    set(URHO3D_DLL_LOCATION "${RBFX_PATH}/bin/${RBFX_BUILD_TYPE}/Urho3D.dll")
     execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${RBFX_PATH}/bin/${RBFX_BUILD_TYPE}/Urho3D.dll ${CMAKE_BINARY_DIR}/Urho3D.dll)
   endif()
 else ()
   message(WARNING "MKLINK is not working properly, copy/link data yourself")
 endif()
+
+
+set(URHOTREEGEN_VERSION_MAJOR 0)
+set(URHOTREEGEN_VERSION_MINOR 0)
+set(URHOTREEGEN_VERSION_BUGFIX 0)
+
+set(URHOTREEGEN_VERSION_AS_STRING
+  "${URHOTREEGEN_VERSION_MAJOR}.${URHOTREEGEN_VERSION_MINOR}.${URHOTREEGEN_VERSION_BUGFIX}")
+
+# install msvc runtime bloat
+set(CMAKE_INSTALL_UCRT_LIBRARIES Yes)
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ".")
+set(CMAKE_INSTALL_DEBUG_LIBRARIES Yes)
+include(InstallRequiredSystemLibraries)
+
+
+install(TARGETS treegen
+  DESTINATION ".")
+
+install(DIRECTORY bin/CoreData bin/Data
+  DESTINATION ".")
+
+if(WIN32)
+  install(FILES "${URHO3D_DLL_LOCATION}"
+    DESTINATION ".")
+endif()
+
+if(WIN32)
+  set(CPACK_GENERATOR "ZIP")
+  set(URHOTREEGEN_SYSTEM_NAME "windows")
+elseif(UNIX)
+  set(URHOTREEGEN_SYSTEM_NAME "linux")
+  set(CPACK_GENERATOR "TGZ")
+endif()
+
+set(URHOTREEGEN_ARCH "i686")
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(URHOTREEGEN_ARCH "x86_64")
+endif()
+
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Vitalii Minnakhmetov") #required
+set(CPACK_PACKAGE_VERSION_MAJOR ${URHOTREEGEN_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${URHOTREEGEN_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${URHOTREEGEN_VERSION_BUGFIX})
+set(CPACK_PACKAGE_FILE_NAME "treegen-${URHOTREEGEN_VERSION_AS_STRING}-${URHOTREEGEN_VERSION_GIT_REVISION}-${URHOTREEGEN_SYSTEM_NAME}-${URHOTREEGEN_ARCH}")
+set(CPACK_PACKAGE_VERSION ${URHOTREEGEN_VERSION_AS_STRING})
+include(CPack)
