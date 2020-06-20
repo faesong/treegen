@@ -45,6 +45,7 @@ add_executable(treegen WIN32
   src/main.cpp
   src/AppSettings.cpp
   src/TreeEditState.cpp
+  src/TreeConfigCache.cpp
   src/UrhoToGltf.cpp
   src/SettingsUi.cpp
   )
