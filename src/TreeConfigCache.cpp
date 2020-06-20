@@ -112,7 +112,7 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
 
     create<V2::StringValue>(_cfg,
                             "material.leaf_texture_name",
-                            "leaf_default.png",
+                            "birch.png",
                             &leafTextureName);
 
     createArithmetic<IntValue>(_cfg, "material.leaves_atlas_res_x", 1, 100, 3,
