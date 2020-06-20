@@ -2,6 +2,7 @@
 
 #include <UrhoBits/TpsCameraController/TpsCameraController.hpp>
 #include <UrhoBits/UrhoAppFramework/IUpdatedState.hpp>
+#include <UrhoBits/InputManager/InputManager.hpp>
 
 
 #include <fx/gltf.h>
@@ -16,11 +17,6 @@ class Scene;
 }
 
 class AppSettings;
-
-namespace UrhoBits {
-class InputManager;
-class InputManagerAction;
-}
 
 namespace VcppBits {
 class StateManager;

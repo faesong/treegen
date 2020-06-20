@@ -13,9 +13,6 @@
 #include <Urho3D/Resource/ResourceCache.h>
 
 
-#include <UrhoBits/InputManager/InputManager.hpp>
-
-
 #include <VcppBits/StringUtils/StringUtils.hpp>
 #include <VcppBits/MathUtils/MathUtils.hpp>
 #include <VcppBits/StateManager/StateManager.hpp>
