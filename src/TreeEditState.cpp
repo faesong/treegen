@@ -3,8 +3,41 @@
 
 #include "TreeEditState.hpp"
 
+#include <limits>
+#include <filesystem>
+
+
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Input/Input.h>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Resource/ResourceCache.h>
+
+
+#include <UrhoBits/InputManager/InputManager.hpp>
+
+
+#include <VcppBits/StringUtils/StringUtils.hpp>
+#include <VcppBits/MathUtils/MathUtils.hpp>
+#include <VcppBits/StateManager/StateManager.hpp>
+
+
+#include "UrhoToGltf.hpp"
+#include "AppSettings.hpp"
+
+// TODO: move to UrhoUtils?
+inline Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
+                                      const ea::string &pModelPath,
+                                      const ea::string &pMaterialPath = "",
+                                      const ea::string &pNodeName = "") {
+    auto node = pParent->CreateChild(pNodeName);
+    auto cache = node->GetSubsystem<Urho3D::ResourceCache>();
+    auto obj = node->CreateComponent<Urho3D::StaticModel>();
+    obj->SetModel(cache->GetResource<Urho3D::Model>(pModelPath));
+    obj->SetMaterial(cache->GetResource<Urho3D::Material>(pMaterialPath));
+
+    return node;
+}
+
 
 TreeEditState::TreeEditState (Urho3D::Context* pContext,
                               VcppBits::StateManager* pStateMgr,

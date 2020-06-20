@@ -1,50 +1,30 @@
 #pragma once
 
-#include <limits>
-#include <filesystem>
-
-#include <Urho3D/SystemUI/Console.h>
-#include <Urho3D/SystemUI/SystemUI.h>
-#include <Urho3D/Container/Ptr.h>
-#include <Urho3D/SystemUI/SystemMessageBox.h>
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Core/Timer.h>
-#include <Urho3D/IO/Log.h>
-
-#include <VcppBits/MathUtils/MathUtils.hpp>
-#include <VcppBits/StringUtils/StringUtils.hpp>
-#include <VcppBits/StateManager/IState.hpp>
-#include <VcppBits/StateManager/StateManager.hpp>
-#include <VcppBits/Settings/Settings.hpp>
-#include <VcppBits/Settings/SettingsException.hpp>
-
 #include <UrhoBits/TpsCameraController/TpsCameraController.hpp>
 #include <UrhoBits/UrhoAppFramework/IUpdatedState.hpp>
-#include <UrhoBits/InputManager/InputManager.hpp>
+
 
 #include <fx/gltf.h>
 
-#include "AppSettings.hpp"
 #include "UrhoToGltf.hpp"
 #include "TreeConfigCache.hpp"
 #include "SettingsUi.hpp"
 
-// TODO: move to UrhoUtils?
-inline Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
-                                      const ea::string &pModelPath,
-                                      const ea::string &pMaterialPath = "",
-                                      const ea::string &pNodeName = "") {
-    auto node = pParent->CreateChild(pNodeName);
-    auto cache = node->GetSubsystem<Urho3D::ResourceCache>();
-    auto obj = node->CreateComponent<Urho3D::StaticModel>();
-    obj->SetModel(cache->GetResource<Urho3D::Model>(pModelPath));
-    obj->SetMaterial(cache->GetResource<Urho3D::Material>(pMaterialPath));
-
-    return node;
+namespace Urho3D {
+class Node;
+class Scene;
 }
 
+class AppSettings;
+
+namespace UrhoBits {
+class InputManager;
+class InputManagerAction;
+}
+
+namespace VcppBits {
+class StateManager;
+}
 
 
 #include <chrono>  // chrono::system_clock
