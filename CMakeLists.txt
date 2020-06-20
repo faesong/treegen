@@ -48,6 +48,7 @@ add_executable(treegen WIN32
   src/TreeConfigCache.cpp
   src/UrhoToGltf.cpp
   src/SettingsUi.cpp
+  src/TreeGen.cpp
   )
 
 target_link_libraries(treegen Urho3D)
