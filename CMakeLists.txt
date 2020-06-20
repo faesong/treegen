@@ -14,12 +14,6 @@ get_git_head_revision(GIT_REFSPEC URHOTREEGEN_GIT_SHA1)
 string(SUBSTRING ${URHOTREEGEN_GIT_SHA1} 0 10 URHOTREEGEN_VERSION_GIT_REVISION)
 
 
-if (UNIX)
-  set(ADDITIONAL_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wno-switch -Wuninitialized  -Wshadow -Wredundant-decls -Wdisabled-optimization -Wnoexcept -Wsign-compare -Wsign-conversion -Wstrict-aliasing")
-endif ()
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ADDITIONAL_CXX_FLAGS}")
-
 
 if (DEFINED RBFX_SUBDIR)
   set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "False")
@@ -51,6 +45,12 @@ add_executable(treegen WIN32
   src/TreeGen.cpp
   src/RootState.cpp
   )
+
+if (UNIX)
+  set(ADDITIONAL_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wno-switch -Wuninitialized  -Wshadow -Wredundant-decls -Wdisabled-optimization -Wnoexcept -Wsign-compare -Wsign-conversion -Wstrict-aliasing")
+  separate_arguments(ADDITIONAL_CXX_FLAGS)
+  target_compile_options(treegen PRIVATE "${ADDITIONAL_CXX_FLAGS}")
+endif ()
 
 target_link_libraries(treegen Urho3D)
 add_subdirectory(contrib/vcppbits/VcppBits/StateManager StateManager)
