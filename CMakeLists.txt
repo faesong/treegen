@@ -46,11 +46,13 @@ add_executable(treegen WIN32
   src/RootState.cpp
   )
 
+set(ADDITIONAL_CXX_FLAGS "")
 if (UNIX)
   set(ADDITIONAL_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wno-switch -Wuninitialized  -Wshadow -Wredundant-decls -Wdisabled-optimization -Wnoexcept -Wsign-compare -Wsign-conversion -Wstrict-aliasing")
   separate_arguments(ADDITIONAL_CXX_FLAGS)
-  target_compile_options(treegen PRIVATE "${ADDITIONAL_CXX_FLAGS}")
 endif ()
+
+target_compile_options(treegen PRIVATE ${ADDITIONAL_CXX_FLAGS})
 
 target_link_libraries(treegen Urho3D)
 
@@ -63,7 +65,14 @@ function (add_bit)
 
   foreach (BIT ${ADD_BIT_BITS})
     add_subdirectory(${ADD_BIT_BITS_DIR}/${BIT} ${BIT})
-    target_link_libraries(${ADD_BIT_TARGET} ${ADD_BIT_LIBNAME_PREFIX}-${BIT})
+    set(LIB_NAME ${ADD_BIT_LIBNAME_PREFIX}-${BIT})
+    target_link_libraries(${ADD_BIT_TARGET} ${LIB_NAME})
+    get_property(T TARGET ${LIB_NAME} PROPERTY TYPE)
+    message("type is ${T}")
+    if (NOT ${T} STREQUAL INTERFACE_LIBRARY)
+      message("NOT ${T} EQUAL INTERFACE_LIBRARY")
+      target_compile_options(${LIB_NAME} PRIVATE ${ADDITIONAL_CXX_FLAGS})
+    endif ()
   endforeach ()
 
 endfunction ()
