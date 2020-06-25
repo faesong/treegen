@@ -6,9 +6,9 @@
 
 
 //TODO migrate onto using UrhoBits/SettingsTypes
-inline std::string vector3_to_string (const Urho3D::Vector3 pVector3) {
+inline std::string vector3_to_string (const Urho3D::Vector3& pVector3) {
     std::stringstream ss;
-    ss << std::fixed;
+    //TODO use StringUtils::toString for proper floats?
     ss << "Vector3(" << pVector3.x_ << " "
        << pVector3.y_ << " "
        << pVector3.z_ << ")";
