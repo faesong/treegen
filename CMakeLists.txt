@@ -53,32 +53,34 @@ if (UNIX)
 endif ()
 
 target_link_libraries(treegen Urho3D)
-add_subdirectory(contrib/vcppbits/VcppBits/StateManager StateManager)
-add_subdirectory(contrib/vcppbits/VcppBits/SimpleVector SimpleVector)
-add_subdirectory(contrib/vcppbits/VcppBits/StringUtils StringUtils)
-add_subdirectory(contrib/vcppbits/VcppBits/KeyFile KeyFile)
-add_subdirectory(contrib/vcppbits/VcppBits/Settings Settings)
-add_subdirectory(contrib/vcppbits/VcppBits/MathUtils MathUtils)
-add_subdirectory(contrib/rbfxbits/UrhoBits/GeometryGenerator GeometryGenerator)
-add_subdirectory(contrib/rbfxbits/UrhoBits/TreeGenerator TreeGenerator)
-add_subdirectory(contrib/rbfxbits/UrhoBits/UrhoAppFramework UrhoAppFramework)
-add_subdirectory(contrib/rbfxbits/UrhoBits/InputManager InputManager)
-add_subdirectory(contrib/rbfxbits/UrhoBits/TpsCameraController TpsCameraController)
 
+function (add_bit)
+  set(options "")
+  set(oneValueArgs TARGET BITS_DIR LIBNAME_PREFIX)
+  set(multiValueArgs BITS)
+  cmake_parse_arguments(ADD_BIT "${options}" "${oneValueArgs}"
+    "${multiValueArgs}" ${ARGN} )
 
-target_link_libraries(treegen VcppBits-StateManager)
-target_link_libraries(treegen UrhoBits-TreeGenerator)
-target_link_libraries(treegen UrhoBits-InputManager)
-target_link_libraries(treegen UrhoBits-UrhoAppFramework)
-target_link_libraries(treegen UrhoBits-TpsCameraController)
+  foreach (BIT ${ADD_BIT_BITS})
+    add_subdirectory(${ADD_BIT_BITS_DIR}/${BIT} ${BIT})
+    target_link_libraries(${ADD_BIT_TARGET} ${ADD_BIT_LIBNAME_PREFIX}-${BIT})
+  endforeach ()
 
+endfunction ()
 
-target_link_libraries(treegen UrhoBits-GeometryGenerator)
-target_link_libraries(treegen VcppBits-MathUtils)
-target_link_libraries(treegen VcppBits-Settings)
-target_link_libraries(treegen VcppBits-KeyFile)
-target_link_libraries(treegen VcppBits-SimpleVector)
+add_bit(
+  TARGET treegen
+  BITS_DIR contrib/rbfxbits/UrhoBits
+  LIBNAME_PREFIX UrhoBits
+  BITS GeometryGenerator TreeGenerator UrhoAppFramework InputManager TpsCameraController
+  )
 
+add_bit(
+  TARGET treegen
+  BITS_DIR contrib/vcppbits/VcppBits
+  LIBNAME_PREFIX VcppBits
+  BITS StateManager SimpleVector StringUtils KeyFile Settings MathUtils
+  )
 
 target_include_directories(treegen SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/contrib")
 
