@@ -104,18 +104,17 @@ if (CMAKE_HOST_WIN32)
   endif ()
 endif ()
 
+
+# this part is crap, although it works for couple of specific uses...
 set(RBFX_BUILD_TYPE "Release")
 if (NOT DEFINED RBFX_SUBDIR)
   get_filename_component(RBFX_FOLDER_NAME ${RBFX_PATH} NAME)
-  message("FOLDER NAME ${RBFX_FOLDER_NAME}")
   set(RBFX_DEBUG_BUILD_TYPE_FOUND)
   string(FIND "${RBFX_FOLDER_NAME}" "Debug" RBFX_DEBUG_BUILD_TYPE_POS)
   if (NOT ${RBFX_DEBUG_BUILD_TYPE_POS} EQUAL -1)
     set(RBFX_BUILD_TYPE "Debug")
   endif()
 endif()
-message("RBFX_BUILD_TYPE is ${RBFX_BUILD_TYPE}")
-
 
 
 if (HAS_MKLINK)
