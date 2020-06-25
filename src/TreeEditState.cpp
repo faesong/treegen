@@ -21,6 +21,8 @@
 #include "UrhoToGltf.hpp"
 #include "AppSettings.hpp"
 
+namespace fs = std::filesystem;
+
 // TODO: move to UrhoUtils?
 inline Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
                                       const ea::string &pModelPath,
@@ -33,6 +35,24 @@ inline Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
     obj->SetMaterial(cache->GetResource<Urho3D::Material>(pMaterialPath));
 
     return node;
+}
+
+inline void loadTreePresetsList (Urho3D::Context *pContext,
+                                 Urho3D::StringVector &pPresets)  {
+    pPresets.clear();
+    Urho3D::StringVector all_inis;
+    // somehow if we put "*.tree.ini" as a filter, it still gets all ".ini" files :/
+    pContext->GetSubsystem<Urho3D::FileSystem>()->ScanDir(all_inis,
+                                                          "presets/",
+                                                          "*.ini",
+                                                          Urho3D::SCAN_FILES,
+                                                          false);
+    ea::string must_end_with = ".tree.ini";
+    for (const auto &el : all_inis) {
+        if (el.substr(el.size() - must_end_with.size()) == must_end_with) {
+            pPresets.push_back(el);
+        }
+    }
 }
 
 
@@ -105,7 +125,7 @@ void TreeEditState::setCameraNode (Urho3D::Node* pCameraNode) {
 
 void TreeEditState::reloadPresets () {
     _presets.clear();
-    UrhoBits::loadTreePresetsList(context_, _presets);
+    loadTreePresetsList(context_, _presets);
 
     auto sett = _cfg->tree_preset.get<V2::StringValue>();
     if (sett.size() == 0
@@ -122,11 +142,15 @@ void TreeEditState::reloadPresets () {
 }
 
 void TreeEditState::reloadConf (bool pSave) {
+    if (!fs::is_directory("presets") && !fs::create_directories("presets")) {
+        throw std::runtime_error("couldn't create presets/ directory");
+    }
+
     _pauseUpdates = true;
     if (pSave) {
         _treeSettings.writeFile();
     }
-    _treeSettings.setFilename(_cfg->tree_preset.get<V2::StringValue>());
+    _treeSettings.setFilename("presets/" + _cfg->tree_preset.get<V2::StringValue>());
     _treeSettings.resetAll();
     _treeSettings.load();
 
@@ -284,6 +308,7 @@ void TreeEditState::renderForkingRenamingUi (bool pForking) {
     std::string new_name;
 
     const auto old_path = _cfg->tree_preset.get<V2::StringValue>();
+    const auto old_full_path = "presets/" + old_path;
     const auto old_name = old_path.substr(0, old_path.size() - 9);
 
     if (pForking) {
@@ -322,11 +347,12 @@ void TreeEditState::renderForkingRenamingUi (bool pForking) {
                     _presets.erase(it);
                 }
                 std::filesystem::rename(
-                    std::filesystem::path(old_path),
-                    std::filesystem::path(_cfg->tree_preset.get<V2::StringValue>()));
+                    std::filesystem::path(old_full_path),
+                    std::filesystem::path("presets/" + _cfg->tree_preset.get<V2::StringValue>()));
             }
 
-            _treeSettings.setFilename(_cfg->tree_preset.get<V2::StringValue>());
+            _treeSettings.setFilename("presets/"
+                                      + _cfg->tree_preset.get<V2::StringValue>());
 
             reloadConf();
             doReloadTree();
