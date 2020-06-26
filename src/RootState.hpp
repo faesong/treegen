@@ -7,7 +7,7 @@
 #include <UrhoBits/UrhoAppFramework/IUpdatedState.hpp>
 
 
-class AppSettings;
+struct AppSettings;
 
 class RootState final : public UrhoBits::IUpdatedState {
 public:

@@ -16,7 +16,7 @@ class Node;
 class Scene;
 }
 
-class AppSettings;
+struct AppSettings;
 
 namespace VcppBits {
 class StateManager;
