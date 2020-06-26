@@ -16,14 +16,14 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
     createArithmetic<FloatValue>(_cfg, "root_length", 0.1f, 200.f, 8.f, &_ch.root_length);
     createArithmetic<IntValue>(_cfg, "smoothing_iterations", 2, 100, 4, &_ch.smoothing_iterations);
     create<BoolValue>(_cfg, "wireframe", false, &_ch.wireframe);
-    createArithmetic<FloatValue>(_cfg, "root_radius", 0.01f, 100.f, 0.2f, &_ch.root_radius);
+    createArithmetic<FloatValue>(_cfg, "root_radius", 0.01f, 100.f, .1f, &_ch.root_radius);
     createArithmetic<IntValue>(_cfg, "leaves_level", 0, UrhoBits::detail::MAX_LEAVES_LEVELS, 1,
                                &_ch.leaves_level);
     createArithmetic<FloatValue>(_cfg, "leaves_size", 0.01f, 10.f, 0.25f,
                                  &_ch.lf_leaf_size);
     createArithmetic<FloatValue>(_cfg, "leaves_normals_outwards", 0.0f, 1.f, 0.5f,
                                  &_ch.leaves_normals_outwards);
-    createArithmetic<IntValue>(_cfg, "leaves_per_meter", 0, 100, 15,
+    createArithmetic<IntValue>(_cfg, "leaves_per_meter", 0, 100, 45,
                                &_ch.leaves_per_meter);
     createArithmetic<FloatValue>(_cfg, "leaves_offset", 0.f, .99f, 0.f,
                                  &_ch.leaves_offset);
@@ -38,13 +38,13 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
         createArithmetic<FloatValue>(_cfg, is + ".endpoint_radius_multiplier", .001f, 0.99f, .1f,
                                      &_ch.levels[i].radius_multi);
 
-        createArithmetic<FloatValue>(_cfg, is + ".children_per_meter", 0.f, 100.f, 4.f,
+        createArithmetic<FloatValue>(_cfg, is + ".children_per_meter", 0.f, 100.f, 8.f,
                                      &_ch.levels[i].children_per_meter);
         createArithmetic<IntValue>(_cfg, is + ".children_min", 0, 100, 2,
                                    &_ch.levels[i].children_min);
-        createArithmetic<FloatValue>(_cfg, is + ".offset", 0.f, 1.f, 0.1f,
+        createArithmetic<FloatValue>(_cfg, is + ".offset", 0.f, 3.f, 0.3f,
                                      &_ch.levels[i].offset);
-        createArithmetic<FloatValue>(_cfg, is + ".offset_shortbranch_cancel", 0.f, 1.f, 0.5f,
+        createArithmetic<FloatValue>(_cfg, is + ".offset_shortbranch_cancel", 0.f, 1.f, 0.85f,
                                      &_ch.levels[i].offset_shortbranch_cancel);
 
         createArithmetic<FloatValue>(_cfg, is + ".endpoint_direction_random", 0.f, 1.f, 0.3f,
@@ -64,7 +64,7 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
         createArithmetic<FloatValue>(_cfg, is + ".growth_direction_deviation", 0.f, 1.f, 0.2f,
                                      &_ch.levels[i].growth_dev);
         if (i > 0) {
-            createArithmetic<FloatValue>(_cfg, is + ".length_multiplier", 0.f, 10.f, 0.3f,
+            createArithmetic<FloatValue>(_cfg, is + ".length_multiplier", 0.f, 10.f, 0.15f + float(i) * .12f,
                                          &_ch.levels[i].length_multiplier);
             createArithmetic<FloatValue>(_cfg, is + ".length_distribution_circle", 0.f, 1.f, 0.8f,
                                          &_ch.levels[i].length_distribution_circle);
