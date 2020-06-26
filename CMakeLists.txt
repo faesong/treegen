@@ -48,7 +48,10 @@ add_executable(treegen WIN32
 
 set(ADDITIONAL_CXX_FLAGS "")
 if (UNIX)
-  set(ADDITIONAL_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wno-switch -Wuninitialized  -Wshadow -Wredundant-decls -Wdisabled-optimization -Wnoexcept -Wsign-compare -Wsign-conversion -Wstrict-aliasing")
+  set(ADDITIONAL_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wno-switch -Wuninitialized  -Wshadow -Wredundant-decls -Wdisabled-optimization -Wsign-compare -Wsign-conversion -Wstrict-aliasing")
+  if (CMAKE_COMPILER_IS_GNUCXX)
+    set(ADDITIONAL_CXX_FLAGS "${ADDITIONAL_CXX_FLAGS} -Wnoexcept")
+  endif ()
   separate_arguments(ADDITIONAL_CXX_FLAGS)
 endif ()
 
