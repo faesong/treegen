@@ -283,7 +283,9 @@ void TreeEditState::renderUi () {
             renderForkingRenamingUi(false);
         }
         else {
+            ImGui::PushItemWidth(160);
             renderPresetUi();
+            ImGui::PopItemWidth();
         }
 
 
