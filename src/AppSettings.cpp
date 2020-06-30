@@ -90,7 +90,7 @@ AppSettings::AppSettings (Settings2& pSettings,
           _settings
           .appendSetting(
               "light_direction",
-              Vector3Value(Urho3D::Vector3(0.5, -0.5, 0.5),
+              Vector3Value(Urho3D::Vector3(0.f, -1.f, -1.f),
                            v3_constraint_1_to_1))
           .setUserData(createDescription(_dsc,
                                          Ids::LIGHT_DIRECTION_SETTING,
