@@ -4,6 +4,11 @@
 #include <VcppBits/Settings/SettingsException.hpp>
 #include <VcppBits/Settings/Settings.hpp>
 #include <VcppBits/MathUtils/MathUtils.hpp>
+#include <VcppBits/Translation/Translation.hpp>
+
+using Ids = VcppBits::Translation::Ids;
+using TranslationBinder = VcppBits::Translation::TranslationBinder;
+
 
 void clampSetting(VcppBits::Setting& pSetting) {
     Urho3D::Timer tm;
@@ -143,16 +148,32 @@ void render_settings_ui(VcppBits::Settings* pSettings, size_t* pLongestSettingPt
     }
 }
 
-void render_setting2_ui (std::string pName,
+static void imgui_render_help_marker (const char* desc)
+{
+    ImGui::Text("(?)");
+    if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+            ImGui::TextUnformatted(desc);
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
+}
+
+
+void render_setting2_ui (const TranslationBinder *pTr,
+                         std::string pName,
                          Setting2* pSetting,
-                         int x_id) {
+                         int &id) {
     auto& set = *pSetting; // todo shortcut/refactor
 
-    ui::PushID(x_id);
+    ui::PushID(id);
     if (ui::Button("x")) {
         set.resetToDefault();
     }
     ui::PopID();
+    ++id;
     ui::SameLine();
     const auto curr_set_text =
         ea::string(set.getAsString().c_str());
@@ -161,18 +182,29 @@ void render_setting2_ui (std::string pName,
     //ui::PushStyleColor(ImGuiCol_FrameBg,
     bool is_default = set.isDefault();
     if (is_default) {
-        ui::PushStyleVar(ImGuiStyleVar_Alpha, .45f);
+        ui::PushStyleVar(ImGuiStyleVar_Alpha, .75f);
     }
     //  _tree.pauseUpdates();
+    auto name = pName.c_str();
+    const char* description = nullptr;
+    const void* user_data = pSetting->getUserData();
+    if (pTr && user_data) {
+        const std::pair<Ids, Ids>* dsc =
+            reinterpret_cast<const std::pair<Ids,Ids>*>(user_data);
+        name = pTr->get(dsc->first).c_str();
+        description = pTr->get(dsc->second).c_str();
+    }
+
+    ui::PushID(id);
     switch (set.getType()) {
     case SettingTypeEnum::BOOL:
-        if (ui::Checkbox(pName.c_str(),
+        if (ui::Checkbox(name,
                          set.getIncomingPtr<V2::BoolValue>())) {
             set.setFromIncomingPtr<V2::BoolValue>();
         }
         break;
     case SettingTypeEnum::INT:
-        if (ui::DragInt(pName.c_str(),
+        if (ui::DragInt(name,
                         set.getIncomingPtr<V2::IntValue>(),
                         1, // TODO figure out proper speed
                         set.getConstraint<V2::IntValue>()._min,
@@ -181,7 +213,7 @@ void render_setting2_ui (std::string pName,
         }
         break;
     case SettingTypeEnum::FLOAT:
-        if (ui::DragFloat(pName.c_str(),
+        if (ui::DragFloat(name,
                           set.getIncomingPtr<V2::FloatValue>(),
                           .01f, // TODO figure out proper speed
                           set.getConstraint<V2::FloatValue>()._min,
@@ -191,13 +223,13 @@ void render_setting2_ui (std::string pName,
         break;
     case SettingTypeEnum::VECTOR3:
         if (pName.find("_color") < pName.size()) {
-            if (ui::ColorEdit3(pName.c_str(),
+            if (ui::ColorEdit3(name,
                                (float*)set.getIncomingPtr<Vector3Value>())) {
                 set.setFromIncomingPtr<Vector3Value>();
             }
         }
         else {
-            if (ui::DragFloat3(pName.c_str(),
+            if (ui::DragFloat3(name,
                                (float*)set.getIncomingPtr<Vector3Value>(),
                                .01f, // TODO figure out proper speed
                                set.getConstraint<Vector3Value>()._min.x_,
@@ -209,7 +241,7 @@ void render_setting2_ui (std::string pName,
     case SettingTypeEnum::STRING:
         {
             auto *ptr = set.getIncomingPtr<V2::StringValue>();
-            StdInputText(pName.c_str(),
+            StdInputText(name,
                          ptr,
                          0,
                          nullptr,
@@ -225,7 +257,7 @@ void render_setting2_ui (std::string pName,
         //const std::string& curr = set
         const auto &vals = set.getEnumElements<V2::EnumStringValue>();
         const auto &curr_val = set.get<V2::EnumStringValue>();
-        if (ImGui::BeginCombo(pName.c_str(), curr_val.c_str(), 0)) {
+        if (ImGui::BeginCombo(name, curr_val.c_str(), 0)) {
             for (const auto &el : vals) {
                 bool is_selected = (curr_val == el);
                 if (ImGui::Selectable(el.c_str(), is_selected)) {
@@ -241,6 +273,13 @@ void render_setting2_ui (std::string pName,
     default:
         ui::Text("%s", curr_set_text.c_str());
     }
+    ui::PopID();
+    ++id;
+
+    if (description && description[0]) {
+        ui::SameLine();
+        imgui_render_help_marker(description);
+    }
 
     if (is_default) {
         ui::PopStyleVar(1);
@@ -248,7 +287,7 @@ void render_setting2_ui (std::string pName,
 }
 
 
-void render_settings2_ui(Settings2* pSettings, size_t* pLongestSettingPtr) {
+void render_settings2_ui (const TranslationBinder *pTr, Settings2* pSettings, size_t* pLongestSettingPtr) {
     bool calc_length = false;
     if (pLongestSettingPtr && *pLongestSettingPtr == 0) {
         calc_length = true;
@@ -266,15 +305,13 @@ void render_settings2_ui(Settings2* pSettings, size_t* pLongestSettingPtr) {
 
         if (ui::CollapsingHeader(cat_name.c_str())) {
             for (auto& set : categ) {
-                render_setting2_ui(set.first, set.second, i);
+                render_setting2_ui(pTr, set.first, set.second, i);
 
                 if (calc_length) {
                     if (set.first.size() > * pLongestSettingPtr) {
                         *pLongestSettingPtr = set.first.size();
                     }
                 }
-
-                ++i;
             }
         }
     }

@@ -12,6 +12,8 @@ class Light;
 }
 
 
+#include <VcppBits/Translation/Translation.hpp>
+
 #include <UrhoBits/UrhoAppFramework/UrhoAppFramework.hpp>
 
 
@@ -26,6 +28,7 @@ class TreeGen : public UrhoBits::UrhoAppFramework {
 public:
     TreeGen (Urho3D::Context* pContext);
 
+    void onLanguageSettingUpdate (const std::string &pNewLang);
     void onAmbientSettingUpdate (const Urho3D::Vector3 &pAmbient);
     void onLightDirectionSettingUpdate (const Urho3D::Vector3 &pLightDir);
     void onFogColorSettingUpdate (const Urho3D::Vector3 &pFogColor);
@@ -39,11 +42,12 @@ public:
 
     void setup () override;
     void start () override;
-
+    void endFrame () override;
 
     void setupScene ();
 
 private:
+    VcppBits::Translation::Translation _tr;
     Urho3D::Scene *_scene = nullptr;
 
     Urho3D::Node *_cameraNode = nullptr;
@@ -58,4 +62,6 @@ private:
     Urho3D::RenderPath *_renderPath;
     Urho3D::Zone *_zone;
     Urho3D::Light *_light;
+
+    bool _reloadLanguageRequested = true;
 };

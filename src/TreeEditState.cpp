@@ -16,12 +16,14 @@
 #include <VcppBits/StringUtils/StringUtils.hpp>
 #include <VcppBits/MathUtils/MathUtils.hpp>
 #include <VcppBits/StateManager/StateManager.hpp>
+#include <VcppBits/Translation/Translation.hpp>
 
 
 #include "UrhoToGltf.hpp"
 #include "AppSettings.hpp"
 
 namespace fs = std::filesystem;
+using namespace VcppBits::Translation;
 
 // TODO: move to UrhoUtils?
 inline Urho3D::Node* loadStaticModel (Urho3D::Node* pParent,
@@ -59,13 +61,15 @@ inline void loadTreePresetsList (Urho3D::Context *pContext,
 TreeEditState::TreeEditState (Urho3D::Context* pContext,
                               VcppBits::StateManager* pStateMgr,
                               UrhoBits::InputManager* pInputMgr,
-                              AppSettings* pSettings)
+                              AppSettings* pSettings,
+                              Translation *pTranslation)
     : Urho3D::Object(pContext), // only needed for SystemUI code to subscribe to
                         // events?
     _stateMgr(pStateMgr),
     _inputMgr(pInputMgr),
     _cfg(pSettings),
-    _treeConfigCache(_treeSettings) {
+      _treeConfigCache(_treeSettings),
+      _translation (pTranslation) {
 
     _tree.setConfig(_treeConfigCache.getTreeConfig());
 
@@ -284,11 +288,17 @@ void TreeEditState::renderUi () {
 
 
         if (_tree.isInitialized()) {
-            ImGui::PushItemWidth(-13 // 13 is scrollbar width
-                                     // assuming font is 2 to 1 (height to width):
-                + ImGui::GetFontSize() / 2.f
-                * -(float(_longestSettingLength) * 1.05f));
-            render_settings2_ui(&_treeSettings, &_longestSettingLength);
+            // ImGui::PushItemWidth(-13 // 13 is scrollbar width
+            //                          // assuming font is 2 to 1 (height to width):
+            //     + ImGui::GetFontSize() / 2.f
+            //     * -(float(_longestSettingLength) * 1.05f));
+
+            // TODO how to make the right width? :/ Just give up and remove the
+            // whole _longestSettingLength abracadabra?
+            ImGui::PushItemWidth(120);
+            TranslationBinder bnd(*_translation,
+                                  _cfg->language_);
+            render_settings2_ui(&bnd, &_treeSettings, &_longestSettingLength);
             ImGui::PopItemWidth();
         }
     }

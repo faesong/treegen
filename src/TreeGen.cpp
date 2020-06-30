@@ -13,14 +13,18 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/SystemUI/SystemUI.h>
+
+
+#include "VcppBits/Translation/Translation.hpp"
 
 
 TreeGen::TreeGen (Urho3D::Context* pContext)
     : UrhoBits::UrhoAppFramework (pContext),
       _cfg_detail ("TreeGen.ini"),
-      _cfg(_cfg_detail),
-      _rootState(&_stateMgr, &_cfg),
-      _treeEditState(pContext, &_stateMgr, &_inputMgr, &_cfg) {
+      _cfg(_cfg_detail, _tr),
+      _rootState(_tr, &_stateMgr, &_cfg),
+      _treeEditState(pContext, &_stateMgr, &_inputMgr, &_cfg, &_tr) {
     using std::placeholders::_1;
     _cfg.auto_exposure.addUpdateHandler<V2::BoolValue>(
         this, std::bind(&TreeGen::onAutoExposureSettingUpdate, this, _1));
@@ -38,8 +42,13 @@ TreeGen::TreeGen (Urho3D::Context* pContext)
         this, std::bind(&TreeGen::onShadowIntensitySettingUpdate, this, _1));
     _cfg.light_direction.addUpdateHandler<Vector3Value>(
         this, std::bind(&TreeGen::onLightDirectionSettingUpdate, this, _1));
+    _cfg.language.addUpdateHandler<V2::EnumStringValue>(
+        this, std::bind(&TreeGen::onLanguageSettingUpdate, this, _1));
 }
 
+void TreeGen::onLanguageSettingUpdate (const std::string & /*pNewLang*/) {
+    _reloadLanguageRequested = true;
+}
 
 void TreeGen::onAmbientSettingUpdate (const Urho3D::Vector3 &pAmbient) {
     _zone->SetAmbientColor(Urho3D::Color(pAmbient));
@@ -107,10 +116,6 @@ void TreeGen::start () {
     _stateMgr.pushState(&_rootState);
     _stateMgr.update();
     _stateMgr.pushState(&_treeEditState);
-
-    //SubscribeToEvent(Urho3D::E_UPDATE,
-    //                         URHO3D_HANDLER(TreeGen,
-    //                            update));
 }
 
 void TreeGen::setupScene() {
@@ -165,4 +170,64 @@ void TreeGen::setupScene() {
     _renderPath->Append(cache->GetResource<Urho3D::XMLFile>("PostProcess/Vibrance.xml"));
 
     initPostProcessingSettings();
+}
+
+
+void TreeGen::endFrame () {
+    // TODO20: refactor this PLEASE
+    if (_reloadLanguageRequested) {
+        // first make sure all language names can be rendered properly
+        auto io = ImGui::GetIO();
+
+        static std::vector<ImWchar> ranges;
+        ranges.clear();
+
+        for (auto& l : _tr.getLanguages()) {
+            const auto l_u32 = VcppBits::StringUtils::toUtf32(l);
+            ImWchar max = 0;
+            ImWchar min = std::numeric_limits<ImWchar>::max();
+            for (auto& c : l_u32) {
+                if (c > max) {
+                    max = c;
+                }
+                if (c < min) {
+                    min = c;
+                }
+            }
+            ranges.push_back(min);
+            ranges.push_back(max);
+        }
+
+
+
+        const std::string &lang = _cfg.language.getAsString();
+        ImWchar max = 0;
+        ImWchar min = std::numeric_limits<ImWchar>::max();
+
+        for (auto i = VcppBits::Translation::Ids{};
+             i < VcppBits::Translation::Ids::_ILLEGAL_ELEMENT_;
+             i = static_cast<VcppBits::Translation::Ids>(static_cast<size_t>(i) + 1)) {
+            const auto l_u32 = VcppBits::StringUtils::toUtf32(_tr.get(i, lang));
+
+            for (auto& c : l_u32) {
+                if (c > max) {
+                    max = c;
+                }
+                if (c < min) {
+                    min = c;
+                }
+            }
+
+        }
+        ranges.push_back(min);
+        ranges.push_back(max);
+
+        ranges.push_back(0);
+
+        GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/Anonymous Pro.ttf",
+                                                  ranges.data(),
+                                                  0,
+                                                  true);
+    }
+    _reloadLanguageRequested = false;
 }

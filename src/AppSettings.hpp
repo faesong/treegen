@@ -1,6 +1,12 @@
 #pragma once
 
+
+#include <deque>
+
+
 #include "TreeGenSettings.hpp"
+#include "TranslationUtils.hpp"
+
 
 struct AppSettings {
     inline static const auto v3_constraint_0_to_1 =
@@ -10,9 +16,18 @@ struct AppSettings {
         V2::GenericArithmeticConstraint(Urho3D::Vector3(-1.f, -1.f, -1.f),
             Urho3D::Vector3(1.f, 1.f, 1.f));
 
-    explicit AppSettings(Settings2& pSettings);
+    explicit AppSettings (Settings2& pSettings,
+                          VcppBits::Translation::Translation& pTranslation);
+
+    VcppBits::Translation::Translation& _tr;
+
+    std::deque<TranslationIdsPair> _dsc;
+
 
     Settings2& _settings;
+
+    std::string language_;
+    Setting2& language;
 
     Setting2& tree_preset;
     Setting2& ssao;

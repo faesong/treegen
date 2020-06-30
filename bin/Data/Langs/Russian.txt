@@ -1,0 +1,105 @@
+TRANSLATION_LANGUAGE_NAME Русский
+LANGUAGE_SETTING Язык
+TREE_PRESET_SETTING Предустановка
+SSAO_SETTING SSAO
+SSAO_SETTING_DESCRIPTION Имитация затенения окружающим светом в экранном пространстве
+FXAA_SETTING FXAA
+FXAA_SETTING_DESCRIPTION Относительно дешёвый способ сгладить пикселизацию
+VIBRANCE_SETTING Сочность цветов
+VIBRANCE_SETTING_DESCRIPTION Дополнительное насыщение цветов
+SHADOW_INTENSITY_SETTING Интенсивность тени
+AUTO_EXPOSURE_SETTING Автоэкспозиция
+AUTO_EXPOSURE_SETTING_DESCRIPTION Автоматическая подстройка яркости
+AMBIENT_COLOR_SETTING Цвет окружения
+AMBIENT_COLOR_SETTING_DESCRIPTION Теневая часть цвета объекта
+FOG_COLOR_SETTING Цвет атмосферы
+FOG_COLOR_SETTING_DESCRIPTION Цвет атмосферы и неба
+LIGHT_DIRECTION_SETTING Направление света
+LEVELS_TSETTING Уровни
+LEVELS_TSETTING_DESCRIPTION Количество уровней иерархии дерева
+SEED_TSETTING Случайное зерно
+CURVATURE_THRESHOLD_TSETTING Порог угла сглаживания кривых
+CURVATURE_THRESHOLD_TSETTING_DESCRIPTION Угол меньше которого схлопывать подразделения (смягчения) кривых
+ROOT_LENGTH_TSETTING Длина ствола дерева
+SMOOTHING_ITERATIONS_TSETTING Итераций сглаживания
+SMOOTHING_ITERATIONS_TSETTING_DESCRIPTION Мягкость углов дерева, увеличивает количество используемых полигонов
+WIREFRAME_TSETTING Показать сетку
+ROOT_RADIUS_TSETTING Радиус дерева от корня
+LEAVES_LEVEL_TSETTING Уровней листьев
+LEAVES_LEVEL_TSETTING_DESCRIPTION Количество внешних уровней ветвей, покрытых листьями
+LEAVES_SIZE_TSETTING Размер листа
+LEAVES_NORMALS_OUTWARDS_TSETTING Направить нормали листьев наружу
+LEAVES_NORMALS_OUTWARDS_TSETTING_DESCRIPTION Пересчитывает освещение листвы как одного обхекта, нежели как разрозненного множества
+LEAVES_PER_METER_TSETTING Количество листков на метр
+LEAVES_PER_METER_TSETTING_DESCRIPTION Листья распределяются как N листьев на каждый метр длины ветви, на котором он находится
+LEAVES_OFFSET_TSETTING Начальный сдвиг листьев
+LEAVES_OFFSET_TSETTING_DESCRIPTION Не покрывать начальную часть ("корневую") ветви листьями
+ACACIA_TSETTING Крона типа "зонт"
+ACACIA_TSETTING_DESCRIPTION Сдвигает концы ветвей на один уровень по высоте. Предназначено для создания крон деревьев вроде африканской акации
+SEGMENTS_TSETTING Количество сегментов
+SEGMENTS_TSETTING_DESCRIPTION Во внутреннем представлении ветви создаются из нескольких сегментов, которые затем интерполируются в виде кривой
+ENDPOINT_RADIUS_MULTIPLIER_TSETTING Множитель радиуса ветви на конце
+CHILDREN_PER_METER_TSETTING Количество дочерних ветвей на метр
+CHILDREN_MIN_TSETTING Минимальное количество дочерних ветвей
+OFFSET_TSETTING Начальный сдвиг ветвей
+OFFSET_SHORTBRANCH_CANCEL_TSETTING Отмена сдвига на коротких ветвях
+OFFSET_SHORTBRANCH_CANCEL_TSETTING_DESCRIPTION Помогает поддерживать крону насыщеной ветвями в областях с короткими ветвями. Дополнительно помогает уменьшить количество полигонов при комбинировании с ненулевым сдвигом ветвей
+ENDPOINT_DIRECTION_RANDOM_TSETTING Конечное направление - случайно
+ENDPOINT_DIRECTION_OUTWARD_TSETTING Конечное направление - наружу
+ENDPOINT_DIRECTION_OUTWARD_TSETTING_DESCRIPTION Перпендикулярно родительской ветви
+ENDPOINT_DIRECTION_ZWARD_TSETTING Конечное направление - вверх
+ENDPOINT_DIRECTION_CROWN_OUTWARD_TSETTING Конечное направление - наружу кроне
+ENDPOINT_DIRECTION_CROWN_OUTWARD_TSETTING_DESCRIPTION Для сферических крон
+ENDPOINT_DIRECTION_PARENT_TSETTING Конечное направление - по родителю
+ENDPOINT_DIRECTION_PARENT_TSETTING_DESCRIPTION Повторять направление родительской ветви
+ENDPOINT_INFLUENCE_TSETTING Конечное направление - влияние
+ENDPOINT_INFLUENCE_TSETTING_DESCRIPTION Опция для удобства, позволяет отключить влияние всех опций "Конечное направление"
+GROWTH_DIRECTION_DEVIATION_TSETTING Варьировать направление в течение роста
+GROWTH_DIRECTION_DEVIATION_TSETTING_DESCRIPTION Случайное направление для каждого сегмента ветви
+LENGTH_MULTIPLIER_TSETTING Множитель длины
+LENGTH_MULTIPLIER_TSETTING_DESCRIPTION 
+LENGTH_DISTRIBUTION_CIRCLE_TSETTING Распределение длины - круг
+LENGTH_DISTRUBUTION_CIRCLE_TSETTING_DESCRIPTION Делает крону сферической
+LENGTH_DISTRIBUTION_CONE_TSETTING Распределение длины - конус
+LENGTH_DISTRIBUTION_CONE_TSETTING_DESCRIPTION Для крон вроде ёлки
+LENGTH_DISTRIBUTION_FLAME_TSETTING Распределение длины - факел 
+LENGTH_DISTRIBUTION_FLAME_TSETTING_DESCRIPTION 
+LENGTH_DISTRIBUTION_RANDOM_TSETTING Распределение длины - случайно
+LENGTH_DISTRIBUTION_RANDOM_TSETTING_DESCRIPTION 
+RADIUS_MULTIPLIER_TSETTING Множитель радиуса
+RADIUS_MULTIPLIER_TSETTING_DESCRIPTION Радиус ветви относительно родительской
+DIRECTION_OUTWARD_TSETTING Направление - наружу
+DIRECTION_OUTWARD_TSETTING_DESCRIPTION Перпендикулярно родительской ветви
+DIRECTION_UPWARD_TSETTING Направление - вверх
+DIRECTION_UPWARD_TSETTING_DESCRIPTION 
+DIRECTION_DEVIATION_TSETTING Случайное направление
+DIRECTION_DEVIATION_TSETTING_DESCRIPTION 
+DIRECTION_PARENT_TSETTING Направление по родителю
+DIRECTION_PARENT_TSETTING_DESCRIPTION 
+DIRECTION_CROWN_OUTWARD_TSETTING Направление - наружу от центра кроны
+DIRECTION_CROWN_OUTWARD_TSETTING_DESCRIPTION Для сферических крон
+CROWN_POS_OFFSET_TSETTING Смещение центра кроны
+CROWN_POS_OFFSET_TSETTING_DESCRIPTION Смещает номинальный центр кроны, влияет вкупе с некоторыми другими опциями
+LEAF_DIRECTION_OUTWARD_TSETTING Направление листьев - наружу
+LEAF_DIRECTION_OUTWARD_TSETTING_DESCRIPTION Перпендикулярно родительской ветви
+LEAF_DIRECTION_UPWARD_TSETTING Направление листьев - вверх
+LEAF_DIRECTION_UPWARD_TSETTING_DESCRIPTION 
+LEAF_DIRECTION_RANDOM_TSETTING Направление листьев - случайно
+LEAF_DIRECTION_RANDOM_TSETTING_DESCRIPTION 
+LEAF_DIRECTION_PARENT_TSETTING Направление листьев - по родителю
+LEAF_DIRECTION_PARENT_TSETTING_DESCRIPTION Копировать направление родительской ветви
+LEAF_NORMAL_PARENT_TSETTING Нормаль листа - по родителю
+LEAF_NORMAL_PARENT_TSETTING_DESCRIPTION 
+LEAF_NORMAL_OUTWARD_TSETTING Нормаль листа - наружу
+LEAF_NORMAL_OUTWARD_TSETTING_DESCRIPTION 
+LEAF_TEXTURE_NAME_TSETTING Файл текстуры листа
+LEAF_TEXTURE_NAME_TSETTING_DESCRIPTION 
+LEAF_ATLAS_RES_X_TSETTING Разрешение атласа листа по X
+LEAF_ATLAS_RES_X_TSETTING_DESCRIPTION 
+LEAF_ATLAS_RES_Y_TSETTING Разрешение атласа листа по Y
+LEAF_ATLAS_RES_Y_TSETTING_DESCRIPTION 
+LEAF_SHAPE_TSETTING Форма листа
+LEAF_SHAPE_TSETTING_DESCRIPTION 
+SMOOTHING_ALGORITHM_TSETTING Алгоритм сглаживания углов кривых
+SMOOTHING_ALGORITHM_TSETTING_DESCRIPTION 
+_ILLEGAL_ELEMENT_ 

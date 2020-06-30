@@ -20,6 +20,10 @@ struct AppSettings;
 
 namespace VcppBits {
 class StateManager;
+
+namespace Translation {
+class Translation;
+}
 }
 
 
@@ -77,10 +81,12 @@ class TreeEditState final : public UrhoBits::IUpdatedState,
                             public Urho3D::Object {
     URHO3D_OBJECT(TreeEditState, Object);
 public:
+    using Translation = VcppBits::Translation::Translation;
     TreeEditState (Urho3D::Context *pContext,
                    VcppBits::StateManager *pStateMgr,
                    UrhoBits::InputManager *pInputMgr,
-                   AppSettings *pSettings);
+                   AppSettings *pSettings,
+                   Translation *pTranslation);
 
     void treeLeafTextureSettingUpdated (const std::string& pNewTextureName);
 
@@ -167,4 +173,6 @@ private:
     size_t _framesPassed = 0;
     float _frameTimesPassed = 0.f;
     float _fps = 0.f;
+
+    Translation *_translation;
 };

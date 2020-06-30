@@ -85,11 +85,14 @@ add_bit(
   BITS GeometryGenerator TreeGenerator UrhoAppFramework InputManager TpsCameraController
   )
 
+# Translation bit wants this variable to point to our Translation IDs
+set(TRANSLATION_IDS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/TranslationIds.hpp)
+
 add_bit(
   TARGET treegen
   BITS_DIR contrib/vcppbits/VcppBits
   LIBNAME_PREFIX VcppBits
-  BITS StateManager SimpleVector StringUtils KeyFile Settings MathUtils
+  BITS StateManager SimpleVector StringUtils KeyFile Settings MathUtils Translation
   )
 
 target_include_directories(treegen SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/contrib")

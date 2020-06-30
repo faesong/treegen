@@ -9,6 +9,10 @@
 namespace VcppBits {
     class Setting;
     class Settings;
+
+    namespace Translation {
+        class TranslationBinder;
+    }
 }
 
 void clampSetting (VcppBits::Setting& pSetting);
@@ -70,9 +74,11 @@ inline bool StdInputText (const char* label,
 
 
 // TODO switch to UrhoBits/SettingsUi
-void render_setting2_ui (std::string pName,
+void render_setting2_ui (const VcppBits::Translation::TranslationBinder *pTr,
+                         std::string pName,
                          Setting2* pSetting,
-                         int x_id);
+                         int &id);
 
-void render_settings2_ui (Settings2* pSettings,
+void render_settings2_ui (const VcppBits::Translation::TranslationBinder *pTr,
+                          Settings2* pSettings,
                           size_t* pLongestSettingPtr);
