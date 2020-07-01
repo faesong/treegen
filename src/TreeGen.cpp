@@ -63,7 +63,7 @@ void TreeGen::onFogColorSettingUpdate (const Urho3D::Vector3 &pFogColor) {
 }
 
 void TreeGen::onShadowIntensitySettingUpdate (const float &pIntensity) {
-    _light->SetShadowIntensity(pIntensity);
+    _light->SetShadowIntensity(1.f - pIntensity);
 }
 
 void TreeGen::onAutoExposureSettingUpdate (const bool &pAutoExposure) {
