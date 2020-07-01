@@ -11,7 +11,6 @@ FXAA_SETTING, // FXAA
 FXAA_SETTING_DESCRIPTION, // (Relatively) low-budget anti-aliasing
 VIBRANCE_SETTING, // Vibrance
 VIBRANCE_SETTING_DESCRIPTION, // Additinal color saturation
-// TODO: fix reciprocal in code
 SHADOW_INTENSITY_SETTING, // Shadows intensity
 AUTO_EXPOSURE_SETTING, // Auto exposure
 AUTO_EXPOSURE_SETTING_DESCRIPTION, // Automatic brightness adjustment
