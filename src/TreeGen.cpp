@@ -109,6 +109,12 @@ void TreeGen::start () {
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= (ImGuiConfigFlags_DockingEnable);
 
+    auto fnt = GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/DroidSansMono.ttf",
+                                                         io.Fonts->GetGlyphRangesDefault(),
+                                                         14,
+                                                         false);
+
+
 
     setupScene();
     _treeEditState.setCameraNode(_cameraNode);
@@ -173,6 +179,19 @@ void TreeGen::setupScene() {
 }
 
 
+static void imrange_merge_string (ImWchar &pMax,
+                                  ImWchar &pMin,
+                                  const std::string &pWord) {
+    for (auto& c : VcppBits::StringUtils::toUtf32(pWord)) {
+        if (c > pMax) {
+            pMax = c;
+        }
+        if (c < pMin) {
+            pMin = c;
+        }
+    }
+}
+
 void TreeGen::endFrame () {
     // TODO20: refactor this PLEASE
     if (_reloadLanguageRequested) {
@@ -183,17 +202,9 @@ void TreeGen::endFrame () {
         ranges.clear();
 
         for (auto& l : _tr.getLanguages()) {
-            const auto l_u32 = VcppBits::StringUtils::toUtf32(l);
             ImWchar max = 0;
             ImWchar min = std::numeric_limits<ImWchar>::max();
-            for (auto& c : l_u32) {
-                if (c > max) {
-                    max = c;
-                }
-                if (c < min) {
-                    min = c;
-                }
-            }
+            imrange_merge_string(max, min, l);
             ranges.push_back(min);
             ranges.push_back(max);
         }
@@ -207,26 +218,23 @@ void TreeGen::endFrame () {
         for (auto i = VcppBits::Translation::Ids{};
              i < VcppBits::Translation::Ids::_ILLEGAL_ELEMENT_;
              i = static_cast<VcppBits::Translation::Ids>(static_cast<size_t>(i) + 1)) {
-            const auto l_u32 = VcppBits::StringUtils::toUtf32(_tr.get(i, lang));
-
-            for (auto& c : l_u32) {
-                if (c > max) {
-                    max = c;
-                }
-                if (c < min) {
-                    min = c;
-                }
-            }
+            imrange_merge_string(max, min, _tr.get(i, lang));
 
         }
         ranges.push_back(min);
         ranges.push_back(max);
 
+        auto default_ranges = io.Fonts->GetGlyphRangesDefault();
+        size_t i = 0;
+        while (default_ranges[i] != 0) {
+            ranges.push_back(default_ranges[i++]);
+        }
+
         ranges.push_back(0);
 
-        GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/Anonymous Pro.ttf",
+        GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/DroidSansMono.ttf",
                                                   ranges.data(),
-                                                  0,
+                                                  14,
                                                   true);
     }
     _reloadLanguageRequested = false;
