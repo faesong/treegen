@@ -234,6 +234,12 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
                 .setUserData(createDescription(dsc,
                                                Ids::LEAF_NORMAL_OUTWARD_TSETTING,
                                                Ids::LEAF_NORMAL_OUTWARD_TSETTING_DESCRIPTION));
+            createArithmetic<FloatValue>(_cfg, il + ".normal_upward", 0.001f, 1.f, 0.001f,
+                                         &_ch.leaves[i].lf_normal_upward_k)
+                .setUserData(createDescription(dsc,
+                                               Ids::LEAF_NORMAL_UPWARD_TSETTING,
+                                               Ids::LEAF_NORMAL_UPWARD_TSETTING_DESCRIPTION));
+
         }
     }
 
