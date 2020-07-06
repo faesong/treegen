@@ -1,4 +1,3 @@
-# Set CMake minimum version and CMake policy required by UrhoCommon module
 cmake_minimum_required (VERSION 3.2.3)
 # Set project name
 project (treegen)
