@@ -136,6 +136,12 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
             .setUserData(createDescription(dsc,
                                            Ids::GROWTH_DIRECTION_DEVIATION_TSETTING,
                                            Ids::GROWTH_DIRECTION_DEVIATION_TSETTING_DESCRIPTION));
+
+        createArithmetic<FloatValue>(_cfg, is + ".branching_mirror_direction", 0.f, 1.f, 0.f,
+                                     &_ch.levels[i].branching_mirror_direction)
+            .setUserData(createDescription(dsc,
+                                           Ids::BRANCH_MIRROR_DIRECTION_TSETTING,
+                                           Ids::BRANCH_MIRROR_DIRECTION_TSETTING_DESCRIPTION));
         if (i > 0) {
             createArithmetic<FloatValue>(_cfg, is + ".length_multiplier", 0.f, 10.f, 0.15f + float(i) * .12f,
                                          &_ch.levels[i].length_multiplier)

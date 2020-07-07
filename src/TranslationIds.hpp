@@ -110,6 +110,8 @@ LEAF_SHAPE_TSETTING, // Leaves shape
 LEAF_SHAPE_TSETTING_DESCRIPTION, // 
 SMOOTHING_ALGORITHM_TSETTING, // Smoothing algorithm
 SMOOTHING_ALGORITHM_TSETTING_DESCRIPTION, // 
+BRANCH_MIRROR_DIRECTION_TSETTING, // Mirror direction on child split
+BRANCH_MIRROR_DIRECTION_TSETTING_DESCRIPTION, // Makes parent branch to grow opposite to the direction of the child after split
 _ILLEGAL_ELEMENT_, //
 };
 }
