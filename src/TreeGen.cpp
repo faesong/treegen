@@ -103,6 +103,7 @@ void TreeGen::setup () {
     engineParameters_[Urho3D::EP_MULTI_SAMPLE] = 8;
     engineParameters_[Urho3D::EP_FRAME_LIMITER] = true;
     engineParameters_[Urho3D::EP_REFRESH_RATE] = 200;
+    engineParameters_[Urho3D::EP_RESOURCE_PREFIX_PATHS] = ".;..";
 }
 
 void TreeGen::start () {
