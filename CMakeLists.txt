@@ -14,24 +14,7 @@ string(SUBSTRING ${URHOTREEGEN_GIT_SHA1} 0 10 URHOTREEGEN_VERSION_GIT_REVISION)
 
 
 
-if (DEFINED RBFX_SUBDIR)
-  set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "False")
-  set(URHO3D_EXTRAS "False")
-  set(URHO3D_TOOLS "False")
-  set(URHO3D_GRAPHICS_API "OpenGL")
-  add_subdirectory(${RBFX_SUBDIR} rbfx)
-else ()
-  include ("${RBFX_PATH}/share/CMake/Urho3D.cmake")
-  set(DEPS_FOLDERS_SET True)
-  if (NOT DEFINED RBFX_PATH)
-    message("RBFX_PATH is undefined!")
-    set(DEPS_FOLDERS_SET False)
-  endif()
-endif()
-
-if (NOT ${DEPS_FOLDERS_SET})
-  message(FATAL_ERROR "required variables are undefined!")
-endif()
+include(contrib/rbfxbits/CMake/RbfxSdkUtils.cmake)
 
 
 add_executable(treegen WIN32
@@ -58,24 +41,13 @@ target_compile_options(treegen PRIVATE ${ADDITIONAL_CXX_FLAGS})
 
 target_link_libraries(treegen Urho3D)
 
-function (add_bit)
-  set(options "")
-  set(oneValueArgs TARGET BITS_DIR LIBNAME_PREFIX)
-  set(multiValueArgs BITS)
-  cmake_parse_arguments(ADD_BIT "${options}" "${oneValueArgs}"
-    "${multiValueArgs}" ${ARGN} )
+set_target_properties(treegen PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug"
+  RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release"
+  )
 
-  foreach (BIT ${ADD_BIT_BITS})
-    add_subdirectory(${ADD_BIT_BITS_DIR}/${BIT} ${BIT})
-    set(LIB_NAME ${ADD_BIT_LIBNAME_PREFIX}-${BIT})
-    target_link_libraries(${ADD_BIT_TARGET} ${LIB_NAME})
-    get_property(T TARGET ${LIB_NAME} PROPERTY TYPE)
-    if (NOT ${T} STREQUAL INTERFACE_LIBRARY)
-      target_compile_options(${LIB_NAME} PRIVATE ${ADDITIONAL_CXX_FLAGS})
-    endif ()
-  endforeach ()
 
-endfunction ()
+include(contrib/vcppbits/CMake/AddBit.cmake)
 
 add_bit(
   TARGET treegen
@@ -118,35 +90,13 @@ endif ()
 
 
 # this part is crap, although it works for couple of specific uses...
-set(RBFX_BUILD_TYPE "Release")
-if (NOT DEFINED RBFX_SUBDIR)
-  get_filename_component(RBFX_FOLDER_NAME ${RBFX_PATH} NAME)
-  set(RBFX_DEBUG_BUILD_TYPE_FOUND)
-  string(FIND "${RBFX_FOLDER_NAME}" "Debug" RBFX_DEBUG_BUILD_TYPE_POS)
-  if (NOT ${RBFX_DEBUG_BUILD_TYPE_POS} EQUAL -1)
-    set(RBFX_BUILD_TYPE "Debug")
-  endif()
-endif()
 
 
 if (HAS_MKLINK)
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/Data ${CMAKE_BINARY_DIR}/Data)
 
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/CoreData ${CMAKE_BINARY_DIR}/CoreData)
-
-  message("BUILD TYPE IS ${CMAKE_BUILD_TYPE}")
-  message("CONFIGURATION_TYPE IS ${CMAKE_CONFIGURATION_TYPE}")
-  if (DEFINED RBFX_SUBDIR)
-    set(URHO3D_DLL_LOCATION "${CMAKE_BINARY_DIR}/bin/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll")
-    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink  ${CMAKE_BINARY_DIR}/${CMAKE_CONFIGURATION_TYPE}/Urho3D.dll)
-  else ()
-    set(URHO3D_DLL_LOCATION "${RBFX_PATH}/bin/${RBFX_BUILD_TYPE}/Urho3D.dll")
-    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${RBFX_PATH}/bin/${RBFX_BUILD_TYPE}/Urho3D.dll ${CMAKE_BINARY_DIR}/Urho3D.dll)
-  endif()
-else ()
-  message(WARNING "MKLINK is not working properly, copy/link data yourself")
 endif()
-
 
 set(URHOTREEGEN_VERSION_MAJOR 0)
 set(URHOTREEGEN_VERSION_MINOR 0)
@@ -168,11 +118,6 @@ install(TARGETS treegen
 
 install(DIRECTORY bin/CoreData bin/Data
   DESTINATION ".")
-
-if(WIN32)
-  install(FILES "${URHO3D_DLL_LOCATION}"
-    DESTINATION ".")
-endif()
 
 if(WIN32)
   set(CPACK_GENERATOR "ZIP")
