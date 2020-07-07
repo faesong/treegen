@@ -191,7 +191,9 @@ void render_setting2_ui (const TranslationBinder *pTr,
     if (pTr && user_data) {
         const std::pair<Ids, Ids>* dsc =
             reinterpret_cast<const std::pair<Ids,Ids>*>(user_data);
-        name = pTr->get(dsc->first).c_str();
+        if (dsc->first != Ids::_ILLEGAL_ELEMENT_) {
+            name = pTr->get(dsc->first).c_str();
+        }
         description = pTr->get(dsc->second).c_str();
     }
 
