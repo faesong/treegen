@@ -14,7 +14,7 @@ Why outmost level is named 1,  not 0 in GUI?
 ** DEFECT Supply some proper mygui.ini 
 ** IMPROVEMENT Make configurable font and size
 ** IMPROVEMENT Complete translation
- ** IMPROVEMENT make (option?) for config not to save default settings to file
+** IMPROVEMENT make (option?) for config not to save default settings to file
 ** IMPROVEMENT thickening on branching points
 ** IMPROVEMENT branch splitting
 ** IMPROVEMENT children directions rebalancing
