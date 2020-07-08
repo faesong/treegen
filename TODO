@@ -1,0 +1,78 @@
+# -*-org-*-
+#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) | DONE(f)
+#+TODO: | CANCELED(c) WONTFIX(w)
+#+STARTUP: content
+
+* ISSUES
+** BUG Exporting trunk only crashes blender importer
+** BUG Subdir build is broken?
+** BUG Negative conical length distribution doesn't work
+** BUG Inconsistent leaves level numbering
+Why outmost level is named 1,  not 0 in GUI?
+** BUG Report upstream: cmake install same file same place fucks up
+** BUG Translation id strings are not autoregenerated on build 
+** DEFECT Supply some proper mygui.ini 
+** IMPROVEMENT Make configurable font and size
+** IMPROVEMENT Complete translation
+ ** IMPROVEMENT make (option?) for config not to save default settings to file
+** IMPROVEMENT thickening on branching points
+** IMPROVEMENT branch splitting
+** IMPROVEMENT children directions rebalancing
+1. take all children vectors (maybe even crowncenter->endpoint vectors)
+2. find sum of them all -- that number is OFFSET
+3. substract that offset from every child
+** IMPROVEMENT Expose all the scene settings
+*** That would be Light config, Zone config
+** IMPROVEMENT Material editor
+** IMPROVEMENT Multi-polygon leaves/blandes?
+** CANCELED Add alternative algorithm for smoothing
+The one where you can set minimal degrees between subsequent segments
+
+RESOLUTION: just keep improving the default (precise) algorithm and think of others later
+** CANCELED Leaves texture is not consistant with presets selection..
+You load a tree with default texture, switch to tree with maple, then back and u
+still have maple...
+
+Is it actually solved
+** CANCELED readjust branch root position when smoothing
+OR just calculate branch position right before rendering it, instead of caching
+branch position in branch data structure
+*** Solution 1 readjust the children
+**** problem 1
+when we render the list of Branch[] and Leaf[] data, we have all relations lost,
+so there is no way to recalculate children position based on parent
+*** Solution 2 just add a split at the point, and forbid it's elision later
+*** Solution 3 rebalance the branch subdivision points 
+** DONE Leaves upward normal direction
+** DONE direction mirroring on branching points
+** DONE OPTION make sure there is a loop cut on branching point
+Otherwise a branch will start from empty space
+** DONE adjust options and their labels widths properly
+** DONE Setting UI labels do not fit well
+** DONE Supply some proper presets in build tree and on install
+*** Birch -- young, mature and silver birch
+*** Apple?
+*** Maple is not possible yet
+** DONE Document the UI
+Add [?] tooltips as it's done in ImGUI samples
+** DONE Add "release" distribution packing automation
+** DONE Default tree is shit
+** DONE Propagate our warning options to contrib vcppbits and urhobits
+** DONE config file has extra zeros on floating point numbers
+** DONE Warnings
+@rokas
+warnnings are because of
+  if (UNIX)
+    set(ADDITIONAL_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wno-switch -Wuninitialized  -Wshadow -Wredundant-decls -Wdisabled-optimization -Wnoexcept -Wsign-compare -Wsign-conversion -Wstrict-aliasing")
+  endif ()
+you should not enable them globally like that. dependencies are large and out of
+your control, there is no point in enabling those warnings for them. do this
+only for your own code
+** DONE Improve build times
+** DONE Crash when setting 'levels' setting to 5
+** DONE Default leaf texture name is not present in Data folder?
+** DONE Inconsistant children branches positions depending on smoothing
+** DONE Make children grow out of already smoothed and simplified branches
+** DONE Second (graphical) segment of the tree has wrong texture
+** DONE When switching preset, camera doesn't refocus on the center
+** DONE Cleanup ui from temporary clutter
