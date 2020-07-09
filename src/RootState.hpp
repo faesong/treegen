@@ -7,17 +7,14 @@
 #include <UrhoBits/UrhoAppFramework/IUpdatedState.hpp>
 
 
-namespace VcppBits {
-    namespace Translation {
-        class Translation;
-    }
-}
+#include <VcppBits/Translation/TranslationForwardDecls.hpp>
+
 
 struct AppSettings;
 
 class RootState final : public UrhoBits::IUpdatedState {
 public:
-    RootState (const VcppBits::Translation::Translation& pTranslation,
+    RootState (const VcppBits::Translation::Translation* pTranslation,
                VcppBits::StateManager *pStateManager,
                AppSettings *pSettings);
 
@@ -36,5 +33,5 @@ public:
 private:
     VcppBits::StateManager *_stateMgr;
     AppSettings *_settings;
-    const VcppBits::Translation::Translation& _translation;
+    const VcppBits::Translation::Translation* _translation;
 };

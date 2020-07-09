@@ -11,8 +11,8 @@ class Zone;
 class Light;
 }
 
+#include <VcppBits/Translation/TranslationForwardDecls.hpp>
 
-#include <VcppBits/Translation/Translation.hpp>
 
 #include <UrhoBits/UrhoAppFramework/UrhoAppFramework.hpp>
 
@@ -47,7 +47,7 @@ public:
     void setupScene ();
 
 private:
-    VcppBits::Translation::Translation _tr;
+    std::unique_ptr<VcppBits::Translation::Translation> _tr;
     Urho3D::Scene *_scene = nullptr;
 
     Urho3D::Node *_cameraNode = nullptr;

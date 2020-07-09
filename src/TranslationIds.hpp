@@ -1,3 +1,5 @@
+#pragma once
+
 namespace VcppBits {
 namespace Translation {
 enum Ids : size_t {

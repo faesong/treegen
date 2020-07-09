@@ -16,15 +16,17 @@
 #include <Urho3D/SystemUI/SystemUI.h>
 
 
-#include "VcppBits/Translation/Translation.hpp"
+#include "TranslationIds.hpp"
+#include <VcppBits/Translation/Translation.hpp>
 
 
 TreeGen::TreeGen (Urho3D::Context* pContext)
     : UrhoBits::UrhoAppFramework (pContext),
+      _tr (std::make_unique<VcppBits::Translation::Translation>()),
       _cfg_detail ("TreeGen.ini"),
-      _cfg(_cfg_detail, _tr),
-      _rootState(_tr, &_stateMgr, &_cfg),
-      _treeEditState(pContext, &_stateMgr, &_inputMgr, &_cfg, &_tr) {
+      _cfg(_cfg_detail, _tr.get()),
+      _rootState(_tr.get(), &_stateMgr, &_cfg),
+      _treeEditState(pContext, &_stateMgr, &_inputMgr, &_cfg, _tr.get()) {
     using std::placeholders::_1;
     _cfg.auto_exposure.addUpdateHandler<V2::BoolValue>(
         this, std::bind(&TreeGen::onAutoExposureSettingUpdate, this, _1));
@@ -202,7 +204,7 @@ void TreeGen::endFrame () {
         static std::vector<ImWchar> ranges;
         ranges.clear();
 
-        for (auto& l : _tr.getLanguages()) {
+        for (auto& l : _tr->getLanguages()) {
             ImWchar max = 0;
             ImWchar min = std::numeric_limits<ImWchar>::max();
             imrange_merge_string(max, min, l);
@@ -219,7 +221,7 @@ void TreeGen::endFrame () {
         for (auto i = VcppBits::Translation::Ids{};
              i < VcppBits::Translation::Ids::_ILLEGAL_ELEMENT_;
              i = static_cast<VcppBits::Translation::Ids>(static_cast<size_t>(i) + 1)) {
-            imrange_merge_string(max, min, _tr.get(i, lang));
+            imrange_merge_string(max, min, _tr->get(i, lang));
 
         }
         ranges.push_back(min);

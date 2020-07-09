@@ -16,6 +16,9 @@
 #include <VcppBits/StringUtils/StringUtils.hpp>
 #include <VcppBits/MathUtils/MathUtils.hpp>
 #include <VcppBits/StateManager/StateManager.hpp>
+
+
+#include "TranslationIds.hpp"
 #include <VcppBits/Translation/Translation.hpp>
 
 

@@ -4,8 +4,7 @@
 #include <utility>
 
 
-#include <VcppBits/Translation/Translation.hpp> // TODO: refactor the needed Ids
-                                                // to separate file?
+#include "TranslationIds.hpp"
 
 
 using TranslationIdsPair = std::pair<VcppBits::Translation::Ids,

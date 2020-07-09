@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 
+#include "TranslationIds.hpp"
 #include <VcppBits/Translation/Translation.hpp>
 
 
@@ -12,7 +13,7 @@
 #include "SettingsUi.hpp"
 
 
-RootState::RootState (const VcppBits::Translation::Translation& pTranslation,
+RootState::RootState (const VcppBits::Translation::Translation* pTranslation,
                       VcppBits::StateManager *pStateManager,
                       AppSettings *pSettings)
     : _stateMgr (pStateManager),
@@ -69,7 +70,7 @@ void RootState::renderDockSpaceUi () {
 
 void RootState::renderSettingsUi () {
     if (ui::Begin("Settings", 0, 0)) {
-        VcppBits::Translation::TranslationBinder bnd(_translation, _settings->language_);
+        VcppBits::Translation::TranslationBinder bnd(*_translation, _settings->language_);
         render_settings2_ui (&bnd, &_settings->_settings, nullptr);
     }
     ui::End();

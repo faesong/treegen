@@ -4,6 +4,9 @@
 #include <deque>
 
 
+#include <VcppBits/Translation/TranslationForwardDecls.hpp>
+
+
 #include "TreeGenSettings.hpp"
 #include "TranslationUtils.hpp"
 
@@ -17,9 +20,9 @@ struct AppSettings {
             Urho3D::Vector3(1.f, 1.f, 1.f));
 
     explicit AppSettings (Settings2& pSettings,
-                          VcppBits::Translation::Translation& pTranslation);
+                          VcppBits::Translation::Translation* pTranslation);
 
-    VcppBits::Translation::Translation& _tr;
+    VcppBits::Translation::Translation* _tr;
 
     std::deque<TranslationIdsPair> _dsc;
 

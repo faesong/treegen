@@ -7,6 +7,9 @@
 #include <VcppBits/Settings/SettingsException.hpp>
 #include <VcppBits/Settings/Settings.hpp>
 #include <VcppBits/MathUtils/MathUtils.hpp>
+
+
+#include "TranslationIds.hpp"
 #include <VcppBits/Translation/Translation.hpp>
 
 using Ids = VcppBits::Translation::Ids;

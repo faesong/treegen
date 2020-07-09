@@ -5,6 +5,7 @@
 
 #include <Urho3D/Math/Vector3.h>
 
+#include "TranslationIds.hpp"
 #include <VcppBits/Translation/Translation.hpp>
 
 #include "TranslationUtils.hpp"
@@ -14,7 +15,7 @@ using namespace VcppBits::Translation;
 using namespace V2::SettingsUtils;
 
 AppSettings::AppSettings (Settings2& pSettings,
-                          Translation& pTranslation)
+                          Translation* pTranslation)
     : _tr (pTranslation),
       _settings(pSettings),
       // TODO7: create new type of setting constraint: the one which uses a
@@ -22,7 +23,7 @@ AppSettings::AppSettings (Settings2& pSettings,
       language(createEnum<V2::EnumStringValue>(
                    _settings,
                    "language",
-                   _tr.getLanguages(),
+                   _tr->getLanguages(),
                    "English",
                    &language_,
                    nullptr)
