@@ -3,7 +3,6 @@
 #+STARTUP: content
 
 * ISSUES
-** BUG Subdir build is broken?
 ** BUG Negative conical length distribution doesn't work
 ** BUG Inconsistent leaves level numbering
 Why outmost level is named 1,  not 0 in GUI?
@@ -27,6 +26,8 @@ Why outmost level is named 1,  not 0 in GUI?
 ** TRIVIALL rename smoothing resolution "curve base resolution"
 ** TRIVIALL rename num_segments to "num internal segments" and increase the limit
 ** TRIVIALL add per-level setting of number of segments in crossection of a branch
+** DONE Subdir build is broken?  
+RESOLVED <2020-07-09 Чт>
 ** DONE Exporting trunk only crashes blender importer
 ** DONE Leaves upward normal direction
 ** DONE direction mirroring on branching points

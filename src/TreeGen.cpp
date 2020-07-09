@@ -112,7 +112,7 @@ void TreeGen::start () {
 
     auto fnt = GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/DroidSansMono.ttf",
                                                          io.Fonts->GetGlyphRangesDefault(),
-                                                         14,
+                                                         18,
                                                          false);
 
 
@@ -235,7 +235,7 @@ void TreeGen::endFrame () {
 
         GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/DroidSansMono.ttf",
                                                   ranges.data(),
-                                                  14,
+                                                  18,
                                                   true);
     }
     _reloadLanguageRequested = false;
