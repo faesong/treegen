@@ -1,10 +1,8 @@
 # -*-org-*-
-#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) | TRIVIAL(t) | DONE(f)
-#+TODO: | CANCELED(c) WONTFIX(w)
+#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) TRIVIALL(t) | WONTFIX(w) CANCELED(c) DONE(f) 
 #+STARTUP: content
 
 * ISSUES
-** BUG Exporting trunk only crashes blender importer
 ** BUG Subdir build is broken?
 ** BUG Negative conical length distribution doesn't work
 ** BUG Inconsistent leaves level numbering
@@ -26,27 +24,10 @@ Why outmost level is named 1,  not 0 in GUI?
 *** That would be Light config, Zone config
 ** IMPROVEMENT Material editor
 ** IMPROVEMENT Multi-polygon leaves/blandes?
-** TRIVIAL rename smoothing resolution "curve base resolution"
-** TRIVIAL rename num_segments to "num internal segments" and increase the limit
-** TRIVIAL add per-level setting of number of segments in crossection of a branch
-** CANCELED Add alternative algorithm for smoothing
-The one where you can set minimal degrees between subsequent segments
-
-RESOLUTION: just keep improving the default (precise) algorithm and think of others later
-** CANCELED Leaves texture is not consistant with presets selection..
-You load a tree with default texture, switch to tree with maple, then back and u
-still have maple...
-
-Is it actually solved
-** CANCELED readjust branch root position when smoothing
-OR just calculate branch position right before rendering it, instead of caching
-branch position in branch data structure
-*** Solution 1 readjust the children
-**** problem 1
-when we render the list of Branch[] and Leaf[] data, we have all relations lost,
-so there is no way to recalculate children position based on parent
-*** Solution 2 just add a split at the point, and forbid it's elision later
-*** Solution 3 rebalance the branch subdivision points 
+** TRIVIALL rename smoothing resolution "curve base resolution"
+** TRIVIALL rename num_segments to "num internal segments" and increase the limit
+** TRIVIALL add per-level setting of number of segments in crossection of a branch
+** DONE Exporting trunk only crashes blender importer
 ** DONE Leaves upward normal direction
 ** DONE direction mirroring on branching points
 ** DONE OPTION make sure there is a loop cut on branching point
@@ -80,3 +61,21 @@ only for your own code
 ** DONE Second (graphical) segment of the tree has wrong texture
 ** DONE When switching preset, camera doesn't refocus on the center
 ** DONE Cleanup ui from temporary clutter
+** CANCELED Add alternative algorithm for smoothing
+The one where you can set minimal degrees between subsequent segments
+
+RESOLUTION: just keep improving the default (precise) algorithm and think of others later
+** CANCELED Leaves texture is not consistant with presets selection..
+You load a tree with default texture, switch to tree with maple, then back and u
+still have maple...
+
+Is it actually solved
+** CANCELED readjust branch root position when smoothing
+OR just calculate branch position right before rendering it, instead of caching
+branch position in branch data structure
+*** Solution 1 readjust the children
+**** problem 1
+when we render the list of Branch[] and Leaf[] data, we have all relations lost,
+so there is no way to recalculate children position based on parent
+*** Solution 2 just add a split at the point, and forbid it's elision later
+*** Solution 3 rebalance the branch subdivision points 
