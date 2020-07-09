@@ -37,6 +37,14 @@ if (UNIX)
   separate_arguments(ADDITIONAL_CXX_FLAGS)
 endif ()
 
+# a workaround for GCC8
+# https://stackoverflow.com/questions/56615841/passing-stdfilesystempath-to-a-function-segfaults
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
+  message(WARNING "gcc ${CMAKE_CXX_COMPILER_VERSION}")
+  target_link_libraries(treegen "-lstdc++fs")
+endif()
+
 target_compile_options(treegen PRIVATE ${ADDITIONAL_CXX_FLAGS})
 
 target_link_libraries(treegen Urho3D)
