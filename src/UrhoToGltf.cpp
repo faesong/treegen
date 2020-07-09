@@ -6,6 +6,7 @@
 
 #include <Urho3D/Graphics/VertexBuffer.h>
 #include <Urho3D/Graphics/IndexBuffer.h>
+#include <Urho3D/IO/Log.h>
 
 fx::gltf::Primitive appendPrimitiveToGltfDocument (
         fx::gltf::Document& pDocument,
@@ -150,15 +151,21 @@ fx::gltf::Primitive appendPrimitiveToGltfDocument (
 
 void appendModelToGltfDocument (fx::gltf::Document& pDocument,
                                 Urho3D::SharedPtr<Urho3D::Model>& pModel) {
-    fx::gltf::Mesh mesh;
-    mesh.name = "meshname";
-
     auto vertex_buffers = pModel->GetVertexBuffers();
     auto index_buffers = pModel->GetIndexBuffers();
 
     if (index_buffers.size() != vertex_buffers.size()) {
         throw std::runtime_error("IndexBuffers.size() != VertexBuffers.size()");
     }
+
+    if (vertex_buffers.size() == 1 && vertex_buffers[0]->GetVertexCount() == 0) {
+        URHO3D_LOGINFO("tried to export empty model to GLTF document, "
+                       "ignoring...");
+        return;
+    }
+
+    fx::gltf::Mesh mesh;
+    mesh.name = "meshname";
 
     for (decltype(index_buffers.size()) i = 0; i < index_buffers.size(); ++i) {
         mesh.primitives.push_back(
