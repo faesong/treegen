@@ -1,5 +1,5 @@
 # -*-org-*-
-#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) | DONE(f)
+#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) | TRIVIAL(t) | DONE(f)
 #+TODO: | CANCELED(c) WONTFIX(w)
 #+STARTUP: content
 
@@ -12,6 +12,7 @@ Why outmost level is named 1,  not 0 in GUI?
 ** BUG Report upstream: cmake install same file same place fucks up
 ** BUG Translation id strings are not autoregenerated on build 
 ** DEFECT Supply some proper mygui.ini 
+** DEFECT Make "smoothing resolution" setting be on per-level basis
 ** IMPROVEMENT Make configurable font and size
 ** IMPROVEMENT Complete translation
 ** IMPROVEMENT make (option?) for config not to save default settings to file
@@ -25,6 +26,9 @@ Why outmost level is named 1,  not 0 in GUI?
 *** That would be Light config, Zone config
 ** IMPROVEMENT Material editor
 ** IMPROVEMENT Multi-polygon leaves/blandes?
+** TRIVIAL rename smoothing resolution "curve base resolution"
+** TRIVIAL rename num_segments to "num internal segments" and increase the limit
+** TRIVIAL add per-level setting of number of segments in crossection of a branch
 ** CANCELED Add alternative algorithm for smoothing
 The one where you can set minimal degrees between subsequent segments
 
