@@ -178,6 +178,13 @@ void render_setting2_ui (const TranslationBinder *pTr,
     if (ui::Button("x")) {
         set.resetToDefault();
     }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(pTr->get(Ids::SETTINGS_RESET_TO_DEFAULT).c_str());
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
     ui::PopID();
     ++id;
     ui::SameLine();

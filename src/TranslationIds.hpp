@@ -6,6 +6,8 @@ enum Ids : size_t {
 TRANSLATION_LANGUAGE_NAME, // English
 LANGUAGE_SETTING, // Language
 
+SETTINGS_RESET_TO_DEFAULT, // Reset to default
+
 TREE_PRESET_SETTING, // Preset
 SSAO_SETTING, // SSAO
 SSAO_SETTING_DESCRIPTION, // Screen-space ambient occlusion
