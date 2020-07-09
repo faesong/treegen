@@ -19,8 +19,8 @@ struct AppSettings {
         V2::GenericArithmeticConstraint(Urho3D::Vector3(-1.f, -1.f, -1.f),
             Urho3D::Vector3(1.f, 1.f, 1.f));
 
-    explicit AppSettings (Settings2& pSettings,
-                          VcppBits::Translation::Translation* pTranslation);
+    AppSettings (Settings2& pSettings,
+                 VcppBits::Translation::Translation* pTranslation);
 
     VcppBits::Translation::Translation* _tr;
 
