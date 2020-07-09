@@ -7,7 +7,6 @@
 ** BUG Inconsistent leaves level numbering
 Why outmost level is named 1,  not 0 in GUI?
 ** BUG Report upstream: cmake install same file same place fucks up
-** BUG Translation id strings are not autoregenerated on build 
 ** DEFECT Supply some proper mygui.ini 
 ** DEFECT Make "smoothing resolution" setting be on per-level basis
 ** IMPROVEMENT Make configurable font and size
@@ -26,6 +25,7 @@ Why outmost level is named 1,  not 0 in GUI?
 ** TRIVIALL rename smoothing resolution "curve base resolution"
 ** TRIVIALL rename num_segments to "num internal segments" and increase the limit
 ** TRIVIALL add per-level setting of number of segments in crossection of a branch
+** DONE Translation id strings are not autoregenerated on build 
 ** DONE Subdir build is broken?  
 RESOLVED <2020-07-09 Чт>
 ** DONE Exporting trunk only crashes blender importer
