@@ -57,12 +57,6 @@ set_target_properties(treegen PROPERTIES
 
 include(contrib/vcppbits/CMake/AddBit.cmake)
 
-add_bit(
-  TARGET treegen
-  BITS_DIR contrib/rbfxbits/UrhoBits
-  LIBNAME_PREFIX UrhoBits
-  BITS GeometryGenerator TreeGenerator UrhoAppFramework InputManager TpsCameraController
-  )
 
 # Translation bit wants this variable to point to our Translation IDs
 set(TRANSLATION_IDS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/TranslationIds.hpp)
@@ -73,6 +67,25 @@ add_bit(
   LIBNAME_PREFIX VcppBits
   BITS StateManager SimpleVector StringUtils KeyFile Settings MathUtils Translation
   )
+
+add_bit(
+  TARGET treegen
+  BITS_DIR contrib/rbfxbits/UrhoBits
+  LIBNAME_PREFIX UrhoBits
+  BITS GeometryGenerator TreeGenerator UrhoAppFramework InputManager TpsCameraController
+  )
+
+add_bit(
+  BITS_DIR contrib/vcppbits/VcppBits
+  LIBNAME_PREFIX VcppBits
+  BITS TestsDriver
+  )
+
+set_target_properties(UrhoBits-TreeGenerator-Tests PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug"
+  RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release"
+  )
+
 
 target_include_directories(treegen SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/contrib")
 

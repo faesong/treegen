@@ -2,7 +2,7 @@
 
 namespace VcppBits {
 namespace Translation {
-enum Ids : size_t {
+enum Ids {
 TRANSLATION_LANGUAGE_NAME, // English
 LANGUAGE_SETTING, // Language
 
