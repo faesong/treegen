@@ -92,7 +92,7 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
                                    &_ch.levels[i].children_min)
             .setUserData(createDescription(dsc,
                                            Ids::CHILDREN_MIN_TSETTING));
-        createArithmetic<FloatValue>(_cfg, is + ".offset", 0.f, 3.f, 0.3f,
+        createArithmetic<FloatValue>(_cfg, is + ".offset", 0.f, 0.999f, 0.3f,
                                      &_ch.levels[i].offset)
             .setUserData(createDescription(dsc,
                                            Ids::OFFSET_TSETTING));
