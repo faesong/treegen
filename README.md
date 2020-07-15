@@ -33,9 +33,8 @@ manual effort as possible.
 
 I try to order the list by the severety level, yet it's not entirely strict.
 
-* The trunc and the branches are generated using segments with optional
-  smoothing, instead of proper bezier or nurbs curves
-* Texturing is quite simplistic and practically isn't really useful at all
+* Texturing of the trunk and branches is quite simplistic and practically 
+  isn't really useful at all
 * There are certain features that make many tree types impossible to make
 * There is no automation for Level-Of-Detail (lower-poly version), and neither
   any useful metadata (like vertex groups or tree skeleton, ..) exported to aid
@@ -50,7 +49,5 @@ I try to order the list by the severety level, yet it's not entirely strict.
   * Many things can be cached
   * Tree is regenerated on each edit, while it's possible to avoid that in many
     cases
-* Documentation is absent -- the focus is on the things above right now (the
-  plan is to include the docs into the software in a form of tooltips or alike)
-* Code is not really well organized, contains dead code and is all written in
-  headers and compiled as 1 translation unit
+* Naming and documentation is absent
+* Not all strings are translatable yet
