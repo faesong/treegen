@@ -1,13 +1,26 @@
 # -*-org-*-
-#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) TRIVIALL(t) | WONTFIX(w) CANCELED(c) DONE(f) 
+#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) TRIVIAL(t) | WONTFIX(w) CANCELED(c) DONE(f) 
 #+STARTUP: content
 
 * ISSUES
-** BUG some children are not re-attached properly to parent branches upon smoothing
-** BUG Negative conical length distribution doesn't work
-** BUG Report upstream: cmake install same file same place fucks up
-** DEFECT Supply some proper mygui.ini 
-** DEFECT Make "smoothing resolution" setting be on per-level basis
+** IMPROVEMENT collapsing
+** IMPROVEMENT optimize smoothing position accumulation
+** IMPROVEMENT optimize find_child_pos(parent, relative_pos) properly
+We should utilize the we call it with relative_pos increasing on each call =>
+so on each subsequent call we can reuse already accumulated segment vectors
+ 
+  [2020-07-16 Чт 16:59]
+  [[file:c:/_vitaly/_projects/dev/urhobits/UrhoBits/TreeGenerator/TreeGenerator.cpp::find_child_pos (const TreeGenerator::Branch * pParent, const float pPosition) {]]
+** IMPROVEMENT Supply some proper mygui.ini 
+** IMPROVEMENT add option not to generate geometry for outer level branches
+** IMPROVEMENT add symlink to source directory from within build path
+ 
+  [2020-07-14 Вт 16:59]
+  [[file:~/_synced/projects/dev/urhotreegen/CMakeLists.txt::#symlink stuff]]
+** IMPROVEMENT :minor: offset of 1 can make the child disconnect from parent upon smoothing
+   Current whacky-solution is to exclude 1 from the range
+  [2020-07-14 Вт 15:04]
+  [[file:src/TreeConfigCache.cpp::createArithmetic<FloatValue>(_cfg, is + ".offset", 0.f, 0.999f, 0.3f,]]
 ** IMPROVEMENT Make configurable font and size
 ** IMPROVEMENT Complete translation
 ** IMPROVEMENT make (option?) for config not to save default settings to file
@@ -21,9 +34,16 @@
 *** That would be Light config, Zone config
 ** IMPROVEMENT Material editor
 ** IMPROVEMENT Multi-polygon leaves/blandes?
-** TRIVIALL rename smoothing resolution "curve base resolution"
-** TRIVIALL rename num_segments to "num internal segments" and increase the limit
-** TRIVIALL add per-level setting of number of segments in crossection of a branch
+** IMPROVEMENT rename num_segments to "num internal segments" and increase the limit
+** IMPROVEMENT add per-level setting of number of segments in crossection of a branch
+** DONE Make "smoothing resolution" setting be on per-level basis
+** DONE rename smoothing resolution "curve base resolution"
+renamed to "subdivisions per meter"
+** DONE Report upstream: cmake install same file same place fucks up
+https://gitlab.kitware.com/cmake/cmake/-/issues/19322 turns out it was rejected
+not-our-issue
+** DONE Negative conical length distribution doesn't work
+** DONE some children are not re-attached properly to parent branches upon smoothing
 ** DONE Inconsistent leaves level numbering
 Why outmost level is named 1,  not 0 in GUI?
 ** DONE Translation id strings are not autoregenerated on build 
