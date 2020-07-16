@@ -35,10 +35,6 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
                                        Ids::CURVATURE_THRESHOLD_TSETTING_DESCRIPTION));
     createArithmetic<FloatValue>(_cfg, "root_length", 0.1f, 200.f, 8.f, &_ch.root_length)
         .setUserData(createDescription(dsc, Ids::ROOT_LENGTH_TSETTING));
-    createArithmetic<IntValue>(_cfg, "smoothing_iterations", 2, 100, 4, &_ch.smoothing_iterations)
-        .setUserData(createDescription(dsc,
-                                       Ids::SMOOTHING_ITERATIONS_TSETTING,
-                                       Ids::SMOOTHING_ITERATIONS_TSETTING_DESCRIPTION));
     create<BoolValue>(_cfg, "wireframe", false, &_ch.wireframe)
         .setUserData(createDescription(dsc, Ids::WIREFRAME_TSETTING));
     createArithmetic<FloatValue>(_cfg, "root_radius", 0.01f, 100.f, .1f, &_ch.root_radius)
@@ -117,8 +113,9 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
                                            Ids::ENDPOINT_DIRECTION_ZWARD_TSETTING));
         createArithmetic<FloatValue>(_cfg, is + ".endpoint_direction_crown_outward", 0.f, 1.f, 0.2f,
                                      &_ch.levels[i].endpoint_crown_outward_k)
-            .setUserData(createDescription(dsc,
-                                           Ids::ENDPOINT_DIRECTION_CROWN_OUTWARD_TSETTING,
+            .setUserData(
+                createDescription(dsc,
+                                  Ids::ENDPOINT_DIRECTION_CROWN_OUTWARD_TSETTING,
                                            Ids::ENDPOINT_DIRECTION_CROWN_OUTWARD_TSETTING_DESCRIPTION));
         createArithmetic<FloatValue>(_cfg, is + ".endpoint_direction_parent", 0.f, 1.f, 0.2f,
                                      &_ch.levels[i].endpoint_parent_k)
@@ -143,6 +140,13 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
             .setUserData(createDescription(dsc,
                                            Ids::BRANCH_MIRROR_DIRECTION_TSETTING,
                                            Ids::BRANCH_MIRROR_DIRECTION_TSETTING_DESCRIPTION));
+
+        createArithmetic<FloatValue>(_cfg, is + ".subdivisions_per_meter", 0.01f, 20.f, 2.f,
+                                     &_ch.levels[i].subdivisions_per_meter)
+            .setUserData(createDescription(dsc,
+                                           Ids::SUBDIVISIONS_PER_METER_TSETTING,
+                                           Ids::SUBDIVISIONS_PER_METER_TSETTING_DESCRIPTION));
+
         if (i > 0) {
             createArithmetic<FloatValue>(_cfg, is + ".length_multiplier", 0.f, 10.f, 0.15f + float(i) * .12f,
                                          &_ch.levels[i].length_multiplier)
@@ -279,17 +283,6 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
         .setUserData(createDescription(dsc,
                                        Ids::LEAF_SHAPE_TSETTING,
                                        Ids::LEAF_SHAPE_TSETTING_DESCRIPTION));
-
-    createEnum<V2::EnumStringValue>(
-        _cfg,
-        "smoothing_algorithm",
-        { "fast", "precise", "experimental" },
-        "fast",
-        &smoothing_algorithm,
-        (int*) &_ch.smoothing_algorithm)
-        .setUserData(createDescription(dsc,
-                                       Ids::SMOOTHING_ALGORITHM_TSETTING,
-                                       Ids::SMOOTHING_ALGORITHM_TSETTING_DESCRIPTION));
 
     _cfg.load();
 }

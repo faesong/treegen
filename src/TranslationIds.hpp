@@ -32,8 +32,6 @@ SEED_TSETTING, // Random seed
 CURVATURE_THRESHOLD_TSETTING, // Curvature threshold
 CURVATURE_THRESHOLD_TSETTING_DESCRIPTION, // Angle below which to collapse crosscut branch subdivisions, supposed to help keeping polygon count lower
 ROOT_LENGTH_TSETTING, // Tree base branch length
-SMOOTHING_ITERATIONS_TSETTING, // Smoothing iterations
-SMOOTHING_ITERATIONS_TSETTING_DESCRIPTION, // Tree branches smoothness, costs more polygons
 WIREFRAME_TSETTING, // Show wireframe
 ROOT_RADIUS_TSETTING, // Tree base radius
 LEAVES_LEVEL_TSETTING, // Leaves levels
@@ -117,6 +115,8 @@ SMOOTHING_ALGORITHM_TSETTING, // Smoothing algorithm
 SMOOTHING_ALGORITHM_TSETTING_DESCRIPTION, // 
 BRANCH_MIRROR_DIRECTION_TSETTING, // Mirror direction on child split
 BRANCH_MIRROR_DIRECTION_TSETTING_DESCRIPTION, // Makes parent branch to grow opposite to the direction of the child after split
+SUBDIVISIONS_PER_METER_TSETTING, // Subdivisions per meter
+SUBDIVISIONS_PER_METER_TSETTING_DESCRIPTION, // 
 _ILLEGAL_ELEMENT_, //
 };
 }
