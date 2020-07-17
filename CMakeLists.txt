@@ -113,7 +113,7 @@ endif ()
 # this part is crap, although it works for couple of specific uses...
 
 
-if (HAS_MKLINK)
+if (HAS_MKLINK OR NOT CMAKE_HOST_WIN32)
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/Data ${CMAKE_BINARY_DIR}/Data)
 
   execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/bin/CoreData ${CMAKE_BINARY_DIR}/CoreData)
