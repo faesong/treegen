@@ -63,6 +63,13 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
                                        Ids::LEAVES_OFFSET_TSETTING,
                                        Ids::LEAVES_OFFSET_TSETTING_DESCRIPTION));
 
+    createArithmetic<IntValue>(_cfg, "norender_levels", 0, 4, 0,
+                               &_ch.norender_levels)
+        .setUserData(createDescription(dsc,
+                                       Ids::NORENDER_GEOM_LEVELS_TSETTING,
+                                       Ids::NORENDER_GEOM_LEVELS_TSETTING_DESCRIPTION));
+
+
 
     for (size_t i = 0; i < 6; ++i) {
         const auto is = std::to_string(i);
