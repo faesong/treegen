@@ -45,7 +45,7 @@ LEAVES_OFFSET_TSETTING, // Leaves spread offset
 LEAVES_OFFSET_TSETTING_DESCRIPTION, // Skip some percentage (starting from root) of the branch before spreading the leaves
 ACACIA_TSETTING, // Umbrella crown
 ACACIA_TSETTING_DESCRIPTION, // Move all children endpoints to same height, supposed to help making african acacia type of crowns
-SEGMENTS_TSETTING, // Segments number
+SEGMENTS_TSETTING, // Internal segments number
 SEGMENTS_TSETTING_DESCRIPTION, // Number of internal segments that the branch curves are interpolated from
 ENDPOINT_RADIUS_MULTIPLIER_TSETTING, // Branch end radius multiplier 
 CHILDREN_PER_METER_TSETTING, // Children per meter

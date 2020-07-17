@@ -71,7 +71,7 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
             .setUserData(createDescription(dsc,
                                            Ids::ACACIA_TSETTING,
                                            Ids::ACACIA_TSETTING_DESCRIPTION));
-        createArithmetic<IntValue>(_cfg, is + ".segments", 1, 20, 10 - i,
+        createArithmetic<IntValue>(_cfg, is + ".internal_segments", 1, 100, 10 - i,
                                    &_ch.levels[i].num_segments)
             .setUserData(createDescription(dsc,
                                            Ids::SEGMENTS_TSETTING,

@@ -36,7 +36,7 @@ LEAVES_OFFSET_TSETTING Начальный сдвиг листьев
 LEAVES_OFFSET_TSETTING_DESCRIPTION Не покрывать начальную часть ("корневую") ветви листьями
 ACACIA_TSETTING Крона типа "зонт"
 ACACIA_TSETTING_DESCRIPTION Сдвигает концы ветвей на один уровень по высоте. Предназначено для создания крон деревьев вроде африканской акации
-SEGMENTS_TSETTING Количество сегментов
+SEGMENTS_TSETTING Количество сегментов при генерации
 SEGMENTS_TSETTING_DESCRIPTION Во внутреннем представлении ветви создаются из нескольких сегментов, которые затем интерполируются в виде кривой
 ENDPOINT_RADIUS_MULTIPLIER_TSETTING Множитель радиуса ветви на конце
 CHILDREN_PER_METER_TSETTING Количество дочерних ветвей на метр
