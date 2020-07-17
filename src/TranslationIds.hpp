@@ -117,6 +117,8 @@ BRANCH_MIRROR_DIRECTION_TSETTING, // Mirror direction on child split
 BRANCH_MIRROR_DIRECTION_TSETTING_DESCRIPTION, // Makes parent branch to grow opposite to the direction of the child after split
 SUBDIVISIONS_PER_METER_TSETTING, // Subdivisions per meter
 SUBDIVISIONS_PER_METER_TSETTING_DESCRIPTION, // 
+CROSSECTION_RESOLUTION_TSETTING, // Crossection resolution
+CROSSECTION_RESOLUTION_TSETTING_DESCRIPTION, // 
 _ILLEGAL_ELEMENT_, //
 };
 }

@@ -147,6 +147,12 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
                                            Ids::SUBDIVISIONS_PER_METER_TSETTING,
                                            Ids::SUBDIVISIONS_PER_METER_TSETTING_DESCRIPTION));
 
+        createArithmetic<IntValue>(_cfg, is + ".circle_resolution", 2, 100, 8-i,
+                                     &_ch.levels[i].circle_resolution)
+            .setUserData(createDescription(dsc,
+                                           Ids::CROSSECTION_RESOLUTION_TSETTING,
+                                           Ids::CROSSECTION_RESOLUTION_TSETTING_DESCRIPTION));
+
         if (i > 0) {
             createArithmetic<FloatValue>(_cfg, is + ".length_multiplier", 0.f, 10.f, 0.15f + float(i) * .12f,
                                          &_ch.levels[i].length_multiplier)
