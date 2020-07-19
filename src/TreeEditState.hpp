@@ -125,6 +125,10 @@ private:
 
     void exportModel ();
 
+#ifndef NDEBUG
+    void runBenchmark ();
+#endif NDEBUG
+
     void renderUi ();
 
     void renderForkingRenamingUi (bool pForking,

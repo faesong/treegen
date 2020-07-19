@@ -267,6 +267,20 @@ void TreeEditState::exportModel () {
     fx::gltf::Save(exp, "export" + getTimestamp() + ".glb", true);
 }
 
+#ifndef NDEBUG
+void TreeEditState::runBenchmark () {
+    auto orig_seed = _treeConfigCache.getTreeConfig()->seed;
+    for (decltype(orig_seed) i = 1; i < 100; ++i) {
+        _treeConfigCache.getTreeConfig()->seed = i;
+        _tree.regenerate();
+    }
+
+    _treeConfigCache.getTreeConfig()->seed = orig_seed;
+
+    doReloadTree();
+}
+#endif
+
 void TreeEditState::renderUi () {
     TranslationBinder bnd(*_translation,
                           _cfg->language_);
@@ -282,6 +296,12 @@ void TreeEditState::renderUi () {
         if (ui::Button(bnd.get(Ids::EXPORT).c_str())) {
             exportModel();
         }
+
+#ifndef NDEBUG
+        if (ui::Button(bnd.get(Ids::BENCHMARK).c_str())) {
+            runBenchmark();
+        }
+#endif
 
 
         if (_isForking) {
