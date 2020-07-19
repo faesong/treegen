@@ -1,41 +1,46 @@
+
 # -*-org-*-
-#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) TRIVIAL(t) | WONTFIX(w) CANCELED(c) DONE(f) 
+#+TODO: BUG(b) DEFECT(d) IMPROVEMENT(i) | WONTFIX(w) CANCELED(c) DONE(f) 
 #+STARTUP: content
 
 * ISSUES
-** IMPROVEMENT collapsing
-** IMPROVEMENT optimize smoothing position accumulation
-** IMPROVEMENT optimize find_child_pos(parent, relative_pos) properly
+** IMPROVEMENT :feature: bake some ambient occlusion into leaves vertices
+** IMPROVEMENT :feature: branches weilding
+** IMPROVEMENT :feature: collapsing
+** IMPROVEMENT :optimization: smoothing position accumulation
+   Already fixed?
+** IMPROVEMENT :optimization: find_child_pos(parent, relative_pos)
 We should utilize the we call it with relative_pos increasing on each call =>
 so on each subsequent call we can reuse already accumulated segment vectors
  
   [2020-07-16 Чт 16:59]
-  [[file:c:/_vitaly/_projects/dev/urhobits/UrhoBits/TreeGenerator/TreeGenerator.cpp::find_child_pos (const TreeGenerator::Branch * pParent, const float pPosition) {]]
-** IMPROVEMENT Supply some proper mygui.ini 
-** IMPROVEMENT add option not to generate geometry for outer level branches
-** IMPROVEMENT add symlink to source directory from within build path
- 
-  [2020-07-14 Вт 16:59]
-  [[file:~/_synced/projects/dev/urhotreegen/CMakeLists.txt::#symlink stuff]]
+  [[file:contrib/rbfxbits/UrhoBits/TreeGenerator/TreeGenerator.cpp::find_child_pos (const TreeGenerator::Branch * pParent, const float pPosition) {]]
+** IMPROVEMENT :usability: Supply some proper mygui.ini 
 ** IMPROVEMENT :minor: offset of 1 can make the child disconnect from parent upon smoothing
    Current whacky-solution is to exclude 1 from the range
   [2020-07-14 Вт 15:04]
   [[file:src/TreeConfigCache.cpp::createArithmetic<FloatValue>(_cfg, is + ".offset", 0.f, 0.999f, 0.3f,]]
-** IMPROVEMENT Make configurable font and size
-** IMPROVEMENT Complete translation
-** IMPROVEMENT make (option?) for config not to save default settings to file
-** IMPROVEMENT thickening on branching points
-** IMPROVEMENT branch splitting
-** IMPROVEMENT children directions rebalancing
+** IMPROVEMENT :usability: Make configurable font and size
+** IMPROVEMENT :usability: Complete translation
+** IMPROVEMENT :minor: make (option?) for config not to save default settings to file
+** IMPROVEMENT :feature: thickening on branching points
+** IMPROVEMENT :feature: branch splitting
+** IMPROVEMENT :feature: children directions rebalancing
 1. take all children vectors (maybe even crowncenter->endpoint vectors)
 2. find sum of them all -- that number is OFFSET
 3. substract that offset from every child
-** IMPROVEMENT Expose all the scene settings
+** IMPROVEMENT :feature: Expose all the scene settings
 *** That would be Light config, Zone config
-** IMPROVEMENT Material editor
-** IMPROVEMENT Multi-polygon leaves/blandes?
-** IMPROVEMENT rename num_segments to "num internal segments" and increase the limit
-** IMPROVEMENT add per-level setting of number of segments in crossection of a branch
+** IMPROVEMENT :feature: Material editor
+** IMPROVEMENT :feature: Multi-polygon leaves/blandes?
+** DONE :feature: add option not to generate geometry for outer level branches
+** DONE :feature: rebalance curve segments around children
+** DONE :dev: add symlink to source directory from within build path
+ 
+  [2020-07-14 Вт 16:59]
+  [[file:~/_synced/projects/dev/urhotreegen/CMakeLists.txt::#symlink stuff]]
+** DONE :feature: rename num_segments to "num internal segments" and increase the limit
+** DONE :feature: add per-level setting of number of segments in crossection of a branch
 ** DONE Make "smoothing resolution" setting be on per-level basis
 ** DONE rename smoothing resolution "curve base resolution"
 renamed to "subdivisions per meter"
@@ -82,6 +87,9 @@ only for your own code
 ** DONE Second (graphical) segment of the tree has wrong texture
 ** DONE When switching preset, camera doesn't refocus on the center
 ** DONE Cleanup ui from temporary clutter
+** CANCELED when there is already a cut due to branching... 
+postpone next cut for as much as not to have (upto) twice as many cuts as requested
+EDIT: was already fixed
 ** CANCELED Add alternative algorithm for smoothing
 The one where you can set minimal degrees between subsequent segments
 
