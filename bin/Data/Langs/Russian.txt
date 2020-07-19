@@ -102,4 +102,12 @@ LEAF_SHAPE_TSETTING Форма листа
 LEAF_SHAPE_TSETTING_DESCRIPTION 
 SMOOTHING_ALGORITHM_TSETTING Алгоритм сглаживания углов кривых
 SMOOTHING_ALGORITHM_TSETTING_DESCRIPTION 
+GENERAL Общие
+TREE Дерево
+EXPORT Экспортировать
+BENCHMARK Бенчмарк
+NEW_PRESET_NAME Имя предустановки
+PRESET Пресет
+FORK форкнуть
+RENAME переименовать
 _ILLEGAL_ELEMENT_ 

@@ -6,6 +6,15 @@ enum Ids {
 TRANSLATION_LANGUAGE_NAME, // English
 LANGUAGE_SETTING, // Language
 
+TREE, // Tree
+EXPORT, // Export
+BENCHMARK, // Benchmark
+NEW_PRESET_NAME, // New preset name
+PRESET, // Preset
+
+FORK, // fork
+RENAME, // rename
+
 SETTINGS_CATEGORY_GENERAL, // General
 SETTINGS_RESET_TO_DEFAULT, // Reset to default
 

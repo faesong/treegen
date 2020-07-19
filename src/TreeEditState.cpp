@@ -268,27 +268,31 @@ void TreeEditState::exportModel () {
 }
 
 void TreeEditState::renderUi () {
+    TranslationBinder bnd(*_translation,
+                          _cfg->language_);
+
     static bool demo_open = false;
     ui::SetNextWindowSize(ImVec2(200, 200),
         ImGuiCond_FirstUseEver);
     ui::SetNextWindowPos(ImVec2(100,
         100),
         ImGuiCond_FirstUseEver);
-    if (ui::Begin("Tree", 0, 0)) {
-        if (ui::Button("Export")) {
+
+    if (ui::Begin((bnd.get(Ids::TREE) + "###Tree").c_str(), 0, 0)) {
+        if (ui::Button(bnd.get(Ids::EXPORT).c_str())) {
             exportModel();
         }
 
 
         if (_isForking) {
-            renderForkingRenamingUi(true);
+            renderForkingRenamingUi(true, bnd);
         }
         else if (_isRenaming) {
-            renderForkingRenamingUi(false);
+            renderForkingRenamingUi(false, bnd);
         }
         else {
             ImGui::PushItemWidth(160);
-            renderPresetUi();
+            renderPresetUi(bnd);
             ImGui::PopItemWidth();
         }
 
@@ -302,8 +306,6 @@ void TreeEditState::renderUi () {
             // TODO how to make the right width? :/ Just give up and remove the
             // whole _longestSettingLength abracadabra?
             ImGui::PushItemWidth(120);
-            TranslationBinder bnd(*_translation,
-                                  _cfg->language_);
             render_settings2_ui(&bnd, &_treeSettings, &_longestSettingLength);
             ImGui::PopItemWidth();
         }
@@ -318,7 +320,9 @@ void TreeEditState::renderUi () {
 
 }
 
-void TreeEditState::renderForkingRenamingUi (bool pForking) {
+void TreeEditState::renderForkingRenamingUi (
+        bool pForking,
+        TranslationBinder &pTrBind) {
     static char preset_name[255];
     auto dest_len = static_cast<size_t>(IM_ARRAYSIZE(preset_name));
     std::string new_name;
@@ -340,7 +344,9 @@ void TreeEditState::renderForkingRenamingUi (bool pForking) {
 
     strncpy(preset_name, new_name.c_str(), new_name.size());
 
-    ui::InputText("New preset name", preset_name, dest_len);
+    ui::InputText(pTrBind.get(Ids::NEW_PRESET_NAME).c_str(),
+                  preset_name,
+                  dest_len);
     if (ui::IsItemDeactivated()) {
         if (findPreset(ea::string(preset_name) + ".tree.ini")
             != _presets.end()) {
@@ -379,10 +385,12 @@ void TreeEditState::renderForkingRenamingUi (bool pForking) {
     }
 }
 
-void TreeEditState::renderPresetUi () {
+void TreeEditState::renderPresetUi (TranslationBinder& pTrBind) {
     static const char* curr_preset;
     curr_preset = _cfg->tree_preset.get<V2::StringValue>().c_str();
-    if (ui::BeginCombo("Preset", curr_preset, 0)) {
+    if (ui::BeginCombo(pTrBind.get(Ids::PRESET).c_str(),
+                       curr_preset,
+                       0)) {
         for (size_t i = 0; i < _presets.size(); ++i) {
             const bool is_selected = (curr_preset == _presets[i]);
             if (ui::Selectable(_presets[i].c_str(), is_selected)) {
@@ -398,11 +406,11 @@ void TreeEditState::renderPresetUi () {
         ui::EndCombo();
     }
     ui::SameLine();
-    if (ui::Button("fork")) {
+    if (ui::Button(pTrBind.get(Ids::FORK).c_str())) {
         _isForking = true;
     }
     ui::SameLine();
-    if (ui::Button("rename")) {
+    if (ui::Button(pTrBind.get(Ids::RENAME).c_str())) {
         _isRenaming = true;
     }
     ui::SameLine();

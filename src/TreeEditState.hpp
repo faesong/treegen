@@ -23,6 +23,7 @@ class StateManager;
 
 namespace Translation {
 class Translation;
+class TranslationBinder;
 }
 }
 
@@ -82,6 +83,8 @@ class TreeEditState final : public UrhoBits::IUpdatedState,
     URHO3D_OBJECT(TreeEditState, Object);
 public:
     using Translation = VcppBits::Translation::Translation;
+    using TranslationBinder = VcppBits::Translation::TranslationBinder;
+
     TreeEditState (Urho3D::Context *pContext,
                    VcppBits::StateManager *pStateMgr,
                    UrhoBits::InputManager *pInputMgr,
@@ -124,9 +127,10 @@ private:
 
     void renderUi ();
 
-    void renderForkingRenamingUi (bool pForking);
+    void renderForkingRenamingUi (bool pForking,
+                                  TranslationBinder &pTrBind);
 
-    void renderPresetUi ();
+    void renderPresetUi (TranslationBinder& pTrBind);
 
     // is used to switch onto something when we delete current
     ea::vector<ea::string>::iterator
