@@ -160,6 +160,10 @@ TreeConfigCache::TreeConfigCache (Settings2& pSettings)
                                            Ids::CROSSECTION_RESOLUTION_TSETTING,
                                            Ids::CROSSECTION_RESOLUTION_TSETTING_DESCRIPTION));
 
+        // just be it always yes -- not to expose too many settings
+        _ch.levels[i].fix_lengths = true;
+        // create<BoolValue>(_cfg, is + ".fix_lengths", false, &_ch.levels[i].fix_lengths);
+
         if (i > 0) {
             createArithmetic<FloatValue>(_cfg, is + ".length_multiplier", 0.f, 10.f, 0.15f + float(i) * .12f,
                                          &_ch.levels[i].length_multiplier)
