@@ -15,6 +15,8 @@ PRESET, // Preset
 FORK, // fork
 RENAME, // rename
 
+SETTINGS, // Settings
+
 SETTINGS_CATEGORY_GENERAL, // General
 SETTINGS_RESET_TO_DEFAULT, // Reset to default
 

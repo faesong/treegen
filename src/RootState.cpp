@@ -12,6 +12,7 @@
 #include "AppSettings.hpp"
 #include "SettingsUi.hpp"
 
+using namespace VcppBits::Translation;
 
 RootState::RootState (const VcppBits::Translation::Translation* pTranslation,
                       VcppBits::StateManager *pStateManager,
@@ -69,8 +70,8 @@ void RootState::renderDockSpaceUi () {
 }
 
 void RootState::renderSettingsUi () {
-    if (ui::Begin("Settings", 0, 0)) {
-        VcppBits::Translation::TranslationBinder bnd(*_translation, _settings->language_);
+    TranslationBinder bnd(*_translation, _settings->language_);
+    if (ui::Begin((bnd.get(Ids::SETTINGS) + "###Settings").c_str(), 0, 0)) {
         render_settings2_ui (&bnd, &_settings->_settings, nullptr);
     }
     ui::End();

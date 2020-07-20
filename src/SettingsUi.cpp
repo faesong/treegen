@@ -315,7 +315,7 @@ void render_settings2_ui (const TranslationBinder *pTr, Settings2* pSettings, si
         std::string cat_name = categ.getName();
 
         if (!cat_name.size()) {
-            cat_name = pTr->get(Ids::SETTINGS_CATEGORY_GENERAL);
+            cat_name = pTr->get(Ids::SETTINGS_CATEGORY_GENERAL) + "###General";
         }
 
         if (ui::CollapsingHeader(cat_name.c_str())) {
