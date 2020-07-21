@@ -1,0 +1,45 @@
+dist: bionic
+
+language: cpp
+
+cache: ccache
+
+compiler:
+  - gcc
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+  - sudo apt-get -y install libegl1-mesa-dev libwayland-dev libx11-dev libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxrandr-dev libxrender-dev libxss-dev libxxf86vm-dev
+
+script:
+  - sh .travis-install-cmake.sh
+  - cmake-kitware/bin/cmake --version
+  # rbfx
+  - mkdir rbfx
+  - cd rbfx
+  - git init
+  - git remote add origin https://github.com/rokups/rbfx.git
+  - git fetch origin 45fc657d09071af3c2000d94fa6854b9352bbb46 --depth=1
+  - git reset --hard FETCH_HEAD
+  - cd ..
+  # bits
+  - cd contrib
+  - git clone --depth 1 https://gitlab.com/fiasco/vcppbits
+  - git clone --depth 1 https://gitlab.com/fiasco/rbfxbits
+  - cd ..
+  - mkdir build
+  - cd build
+  - ../cmake-kitware/bin/cmake .. -DRBFX_SUBDIR=$PWD/../rbfx/
+  - ../cmake-kitware/bin/cmake --build .
