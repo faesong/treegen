@@ -495,7 +495,7 @@ void TreeEditState::onModelUpdated () {
 }
 
 void TreeEditState::renderStats () {
-    if (ui::Begin("Fps", 0, 0)) {
+    if (ui::Begin("FPS", 0, 0)) {
         ImGui::Text("%f", _fps);
     }
     ui::End();
