@@ -127,7 +127,7 @@ private:
 
 #ifndef NDEBUG
     void runBenchmark ();
-#endif NDEBUG
+#endif // NDEBUG
 
     void renderUi ();
 

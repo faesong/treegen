@@ -279,7 +279,7 @@ void TreeEditState::runBenchmark () {
 
     doReloadTree();
 }
-#endif
+#endif // NDEBUG
 
 void TreeEditState::renderUi () {
     TranslationBinder bnd(*_translation,
@@ -301,7 +301,7 @@ void TreeEditState::renderUi () {
         if (ui::Button(bnd.get(Ids::BENCHMARK).c_str())) {
             runBenchmark();
         }
-#endif
+#endif // NDEBUG
 
 
         if (_isForking) {
