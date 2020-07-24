@@ -112,10 +112,10 @@ void TreeGen::start () {
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= (ImGuiConfigFlags_DockingEnable);
 
-    auto fnt = GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/DroidSansMono.ttf",
-                                                         io.Fonts->GetGlyphRangesDefault(),
-                                                         18,
-                                                         false);
+    GetSubsystem<Urho3D::SystemUI>()->AddFont("Data/Fonts/DroidSansMono.ttf",
+                                              io.Fonts->GetGlyphRangesDefault(),
+                                              18,
+                                              false);
 
 
 
