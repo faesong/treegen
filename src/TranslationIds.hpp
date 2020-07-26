@@ -20,6 +20,14 @@ SETTINGS, // Settings
 SETTINGS_CATEGORY_GENERAL, // General
 SETTINGS_RESET_TO_DEFAULT, // Reset to default
 
+STATS, // Stats
+STATS_TREE_GENERATED_IN_MSECS, // Generated in (msecs):
+STATS_TREE, // Tree
+STATS_LEAVES, // Leaves
+STATS_TOTAL, // Total
+STATS_TRIANGLES_VERTICES, // | Triangles: %ld Vertices: %ld
+STATS_LEAVES_NUM, // Leaves num: %ld
+
 TREE_PRESET_SETTING, // Preset
 SSAO_SETTING, // SSAO
 SSAO_SETTING_DESCRIPTION, // Screen-space ambient occlusion

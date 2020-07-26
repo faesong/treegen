@@ -241,12 +241,17 @@ void TreeEditState::update (const float pTimeStep) {
     }
     renderUi();
 
-    ++_framesPassed;
-    _frameTimesPassed += pTimeStep;
 
-    if (_frameTimesPassed >= 1.f) {
-        _fps = float(_framesPassed) / _frameTimesPassed;
+    //_fps = 1.f / (_prevFrameTime + pTimeStep);
+
+    _totFrametimes += pTimeStep;
+
+    if (_frameTimes.size() == _frameTimes.getMaxSize()) {
+        _totFrametimes -= _frameTimes[0];
     }
+    _frameTimes.push_back(pTimeStep);
+
+    //_prevFrameTime = pTimeStep;
 }
 
 void TreeEditState::updateModelStats () {
@@ -333,7 +338,7 @@ void TreeEditState::renderUi () {
     //updateWindowTransforms(ui::GetWindowPos(), ui::GetWindowSize());
     ui::End();
 
-    renderStats();
+    renderStats(bnd);
     if (demo_open) {
         ui::ShowDemoWindow(&demo_open);
     }
@@ -494,26 +499,32 @@ void TreeEditState::onModelUpdated () {
     _camCtl.setPointOfInterest(_tree.getTruncBoundingBox().Center());
 }
 
-void TreeEditState::renderStats () {
+void TreeEditState::renderStats (TranslationBinder &pTrBind) {
     if (ui::Begin("FPS", 0, 0)) {
-        ImGui::Text("%f", _fps);
+        ImGui::Text("%f", 1 / (_totFrametimes / float(_frameTimes.size())));
     }
     ui::End();
-    if (ui::Begin("Stats", 0, 0)) {
-        ImGui::Text("Generated in (msecs):");
+    ;
+    if (ui::Begin(
+            (pTrBind.get(Ids::STATS)+"###Stats").c_str(),
+            0,
+            0)) {
+        ImGui::Text(pTrBind.get(Ids::STATS_TREE_GENERATED_IN_MSECS).c_str());
         ImGui::SameLine();
         ImGui::Text("%d", _statsMsecs);
 
-        ImGui::Text("  Tree | Triangles: %ld Vertices: %ld",
-            _statsTree.triangles,
-            _statsTree.vertices);
-        ImGui::Text("Leaves | Triangles: %ld Vertices: %ld",
-            _statsLeaves.triangles,
-            _statsLeaves.vertices);
-        ImGui::Text(" Total | Triangles: %ld Vertices: %ld",
-            _statsSum.triangles,
-            _statsSum.vertices);
-        ImGui::Text("Leaves: %ld", _statsNumLeaves);
+
+        const auto tris_verts_str = pTrBind.get(Ids::STATS_TRIANGLES_VERTICES);
+        ImGui::Text((pTrBind.get(Ids::STATS_TREE) + tris_verts_str).c_str(),
+                    _statsTree.triangles,
+                    _statsTree.vertices);
+        ImGui::Text((pTrBind.get(Ids::STATS_LEAVES) + tris_verts_str).c_str(),
+                    _statsLeaves.triangles,
+                    _statsLeaves.vertices);
+        ImGui::Text((pTrBind.get(Ids::STATS_TOTAL) + tris_verts_str).c_str(),
+                    _statsSum.triangles,
+                    _statsSum.vertices);
+        ImGui::Text(pTrBind.get(Ids::STATS_LEAVES_NUM).c_str(), _statsNumLeaves);
 
     }
     ui::End();

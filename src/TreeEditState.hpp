@@ -5,6 +5,9 @@
 #include <UrhoBits/InputManager/InputManager.hpp>
 
 
+#include <VcppBits/CircularBuffers/CircularBuffers.hpp>
+
+
 #include <fx/gltf.h>
 
 #include "UrhoToGltf.hpp"
@@ -48,6 +51,7 @@ struct TreeStats {
     size_t vertices{};
     size_t triangles{};
 };
+
 
 inline TreeStats getModelStats (Urho3D::Model* pModel) {
     TreeStats ret;
@@ -146,7 +150,7 @@ private:
 
     void onModelUpdated ();
 
-    void renderStats ();
+    void renderStats (TranslationBinder &pTrBind);
 
     bool _pauseUpdates = false;
 
@@ -178,9 +182,8 @@ private:
     bool _isForking = false;
     bool _isRenaming = false;
 
-    size_t _framesPassed = 0;
-    float _frameTimesPassed = 0.f;
-    float _fps = 0.f;
+    VcppBits::CircularBuffers::CircularArray<float, 32> _frameTimes;
+    float _totFrametimes = 0.f;
 
     Translation *_translation;
 };

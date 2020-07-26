@@ -65,7 +65,15 @@ add_bit(
   TARGET treegen
   BITS_DIR contrib/vcppbits/VcppBits
   LIBNAME_PREFIX VcppBits
-  BITS StateManager SimpleVector StringUtils KeyFile Settings MathUtils Translation
+  BITS
+      StateManager
+      SimpleVector
+      StringUtils
+      KeyFile
+      Settings
+      MathUtils
+      Translation
+      CircularBuffers
   )
 
 add_bit(
