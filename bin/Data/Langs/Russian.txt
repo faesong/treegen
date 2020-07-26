@@ -111,4 +111,13 @@ FORK форкнуть
 RENAME переименовать
 SETTINGS Настройки
 SETTINGS_CATEGORY_GENERAL Общие
+SETTINGS_RESET_TO_DEFAULT Сбросить
+STATS Статистика
+STATS_TREE_GENERATED_IN_MSECS Сгенерировано за (милисекунд)):
+STATS_TREE Дерево
+STATS_LEAVES Листья
+STATS_TOTAL  Всего
+STATS_TRIANGLES_VERTICES  | Треугольников: %ld Вершин: %ld
+STATS_LEAVES_NUM Количество листьев: %ld
+
 _ILLEGAL_ELEMENT_ 
